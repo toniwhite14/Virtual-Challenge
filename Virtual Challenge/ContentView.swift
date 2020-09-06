@@ -61,6 +61,8 @@ struct ContentView: View {
                         self.openMenu()
                     }
                     , trailing: Text("View"))
+                    Spacer()
+                    
                 }
                 
             SideMenu(width: 270,
