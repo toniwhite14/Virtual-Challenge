@@ -13,14 +13,13 @@ struct ListView: View {
     @Environment(\.presentationMode) var presentationMode:Binding<PresentationMode>
     
     
-    
     var body: some View {
         HStack {
             
             NavigationView {
             List {
-                Text("Set New Challenge").onTapGesture {
-                    print("Set New Challenge")
+                Button(action: goMapTracker) {
+                    Text("Set New Challenge")
                 }
                 
                 Text("Current Challenges").onTapGesture {
@@ -43,9 +42,7 @@ struct ListView: View {
                     print("Log Out")
                 }
                 
-              /*  Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-                    Text("Set New Challenge")
-                }
+                /*
                 Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
                     Text("Current Challenges")
                 }
@@ -81,6 +78,14 @@ struct ListView: View {
             }
         }
 }
+}
+
+//TO MOVE TO MAPTRACKER
+func goMapTracker() {
+    if let window = UIApplication.shared.windows.first {
+        window.rootViewController = UIHostingController(rootView: MapTracker())
+        window.makeKeyAndVisible()
+    }
 }
 
 struct ListView_Previews: PreviewProvider {
