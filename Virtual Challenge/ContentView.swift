@@ -35,43 +35,45 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            VStack{
-                MapPage()
+            ZStack {
+                VStack(){
+                    MapPage()
                // MapTracker()
                     .frame(height:500)
                     .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
              //   Spacer()  ?needed
                 
-                VStack(alignment: .center) {
-                Text("Summary")
-                HStack(alignment: .top) {
-                    Text("%")
-                    Text("Mileage")
-                }
-                Text("Progress Charts")
+            //    VStack(alignment: .center) {
+                    Text("Summary")
+                    HStack(alignment: .top) {
+                        Text("%")
+                        Text("Mileage")
+                    }
+                    Text("Progress Charts")
+            //        }
+            
+           //     .padding()
+          //      .offset(y: -70) //sets height for bottom VStack.
                     
-            }
-                .padding()
-                .offset(y: -70) //sets height for bottom VStack.
-                    
-
-        
-        .navigationBarTitle(Text("Challenge Name"), displayMode: .inline)
-    .navigationBarItems(leading:
-            Button("List") {
-                self.openMenu()
-    }
+                .navigationBarTitle(Text("Challenge Name"), displayMode: .inline)
+                .navigationBarItems(leading:
+                    Button("List") {
+                        self.openMenu()
+                    }
                     , trailing: Text("View"))
+                }
                 
-                SideMenu(width: 270,
+            SideMenu(width: 270,
                          isOpen: self.menuOpen,
                          menuClose: self.openMenu)
-                }
+            }
+            
+        }
             
         }
         
-
-        }
+        
+        
     
 
  // } delete if putting in sidemenu code
