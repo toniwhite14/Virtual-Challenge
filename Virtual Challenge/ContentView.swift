@@ -9,7 +9,8 @@
 import SwiftUI
 
 struct ContentView: View {
-   /* @State var menuOpen: Bool = false
+    @State var menuOpen: Bool = false
+    /*@State var menuOpen: Bool = false
         
         var body: some View {
             ZStack {
@@ -30,12 +31,13 @@ struct ContentView: View {
         func openMenu() {
             self.menuOpen.toggle()
         }
-    } */
+    }*/
 
     var body: some View {
         NavigationView {
             VStack{
                 MapPage()
+               // MapTracker()
                     .frame(height:500)
                     .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
              //   Spacer()  ?needed
@@ -55,17 +57,29 @@ struct ContentView: View {
 
         
         .navigationBarTitle(Text("Challenge Name"), displayMode: .inline)
-    .navigationBarItems(leading: Text("List"),
-                        trailing: Text("View"))
-                    
+    .navigationBarItems(leading:
+            Button("List") {
+                self.openMenu()
+    }
+                    , trailing: Text("View"))
+                
+                SideMenu(width: 270,
+                         isOpen: self.menuOpen,
+                         menuClose: self.openMenu)
                 }
             
         }
         
+
         }
-} //delete if putting in sidemenu code
+    
 
+ // } delete if putting in sidemenu code
+    func openMenu() {
+        self.menuOpen.toggle()
+    }
 
+}
 
    
         

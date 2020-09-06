@@ -12,6 +12,7 @@ import FirebaseAuth
 struct HomeView: View {
     @EnvironmentObject var userInfo: UserInfo
     @State var menuOpen: Bool = false
+    @State private var showScreen: Bool = false
         
         
     var body: some View {
@@ -19,8 +20,17 @@ struct HomeView: View {
             ZStack {
           
                 VStack {
-        UserImage()
+                    //UserImage()
+                    Button(action: goContentView) {
+                       
+                        UserImage()
+                        //DONT KNOW WHY IT DOESNT SHOW USER IMAGE
+                        
+                    }
+           
+           
         Text("Logged in as \(userInfo.user.name)")
+           
             .navigationBarTitle("Virtual Challenge")
             .navigationBarItems(leading:
                 Button("List") {
@@ -89,6 +99,13 @@ struct UserImage : View {
             .overlay(Circle().stroke(Color.gray, lineWidth: 4))
             .shadow(radius: 10)
             .padding(.bottom, 75)
+    }
+}
+//TO MOVE TO CONTENTVIEW
+func goContentView() {
+    if let window = UIApplication.shared.windows.first {
+        window.rootViewController = UIHostingController(rootView: ContentView())
+        window.makeKeyAndVisible()
     }
 }
 
