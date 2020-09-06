@@ -35,7 +35,7 @@ struct ContentView: View {
 
     var body: some View {
         NavigationView {
-            VStack {
+            VStack{
                 MapPage()
                // MapTracker()
                     .frame(height:500)
@@ -61,23 +61,18 @@ struct ContentView: View {
             Button("List") {
                 self.openMenu()
     }
-        
-        
-                    , trailing: Text("View")
-                )
+                    , trailing: Text("View"))
                 
-            }
-            SideMenu(width: 270,
-                     isOpen: self.menuOpen,
-                     menuClose: self.openMenu)
-           
-        } 
-               
+                SideMenu(width: 270,
+                         isOpen: self.menuOpen,
+                         menuClose: self.openMenu)
+                }
+            
+        }
         
 
         }
     
-
 
  // } delete if putting in sidemenu code
     func openMenu() {
