@@ -12,7 +12,7 @@ import FirebaseAuth
 struct HomeView: View {
     @EnvironmentObject var userInfo: UserInfo
     @State var menuOpen: Bool = false
-    @State private var showScreen: Bool = false
+   // @State private var showScreen: Bool = false
         
         
     var body: some View {
