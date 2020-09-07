@@ -21,13 +21,14 @@ struct HomeView: View {
           
                 VStack {
                     //UserImage()
-                    Button(action: goContentView) {
+                    Button(action: {goContentView()}) {
                        
                         UserImage()
-                        //DONT KNOW WHY IT DOESNT SHOW USER IMAGE
                         
+                  
                     }
-           
+                    
+
            
         Text("Logged in as \(userInfo.user.name)")
            
@@ -91,6 +92,7 @@ struct HomeView: View {
 struct UserImage : View {
     var body: some View {
         return Image("Face")
+            .renderingMode(.original)
             .resizable()
             .aspectRatio(contentMode: .fill)
             .frame(width: 150, height: 150)
