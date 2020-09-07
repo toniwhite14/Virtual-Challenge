@@ -27,14 +27,14 @@ class UserInfo: ObservableObject {
             }
         self.isUserAuthenticated = .signedIn
             //comment this out when using it on homeView
-          /*  FBFirestore.retrieveFBUser(uid: user.uid) { (result) in
+            FBFirestore.retrieveFBUser(uid: user!.uid) { (result) in
                 switch result {
                 case.failure(let error):
                     print(error.localizedDescription)
                 case.success(let user):
                     self.user = user
                 }
-            } */
+            } 
             
         })
         
