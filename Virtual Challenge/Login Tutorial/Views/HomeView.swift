@@ -14,6 +14,7 @@ struct HomeView: View {
     @EnvironmentObject var userInfo: UserInfo
     @State var menuOpen: Bool = false
     @State var shown: Bool = false
+    @State var userID: String = ""
    // @State private var showScreen: Bool = false
         
         
@@ -32,12 +33,13 @@ struct HomeView: View {
                         self.shown.toggle()}) {
                         Text("Upload Profile Picture")
                     }.sheet(isPresented: $shown) {
-                        ImagePicker(Shown: self.$shown)
+                        ImagePicker(userID: self.$userID, Shown: self.$shown)
                     }
                     
-
+                    Spacer()
            
-        Text("Logged in as \(userInfo.user.name)")
+                    Text("Logged in as \(userInfo.user.name)")
+                    Spacer()
            
             .navigationBarTitle("Virtual Challenge")
             .navigationBarItems(leading:
@@ -82,6 +84,7 @@ struct HomeView: View {
                         //Display some kind of alert to your user here. (it shouldn't happen but it might be worth making!)
                     case.success(let user):
                         self.userInfo.user = user
+                        self.userID = user.uid
                     }
                 }
             }
@@ -107,7 +110,7 @@ struct UserImage : View {
             .cornerRadius(150)
             .overlay(Circle().stroke(Color.gray, lineWidth: 4))
             .shadow(radius: 10)
-            .padding(.bottom, 75)
+        //    .padding(.bottom, 75)
     }
 }
 //TO MOVE TO CONTENTVIEW
@@ -119,6 +122,7 @@ func goContentView() {
 }
 
 struct ImagePicker: UIViewControllerRepresentable {
+    @Binding var userID: String
     
     func makeCoordinator() -> ImagePicker.Coordinator {
         return ImagePicker.Coordinator(parent1: self)
@@ -148,8 +152,7 @@ struct ImagePicker: UIViewControllerRepresentable {
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             let image = info[.originalImage] as! UIImage
             let storage = Storage.storage()
-         //   let user = UserInfo()
-            let userID = "exampleID"
+            let userID = parent.userID
             storage.reference().child(userID).putData(image.jpegData(compressionQuality: 0.35)!, metadata: nil) {(_, err) in
             if err != nil {
                 print((err?.localizedDescription)!)
