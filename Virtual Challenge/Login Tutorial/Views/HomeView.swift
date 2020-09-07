@@ -8,10 +8,12 @@
 
 import SwiftUI
 import FirebaseAuth
+import FirebaseStorage
 
 struct HomeView: View {
     @EnvironmentObject var userInfo: UserInfo
     @State var menuOpen: Bool = false
+    @State var shown: Bool = false
    // @State private var showScreen: Bool = false
         
         
@@ -25,7 +27,12 @@ struct HomeView: View {
                        
                         UserImage()
                         
-                  
+                    }
+                    Button(action: {
+                        self.shown.toggle()}) {
+                        Text("Upload Profile Picture")
+                    }.sheet(isPresented: $shown) {
+                        ImagePicker(Shown: self.$shown)
                     }
                     
 
@@ -111,7 +118,49 @@ func goContentView() {
     }
 }
 
-  
+struct ImagePicker: UIViewControllerRepresentable {
+    
+    func makeCoordinator() -> ImagePicker.Coordinator {
+        return ImagePicker.Coordinator(parent1: self)
+    }
+    
+    @Binding var Shown: Bool
+    
+    func makeUIViewController(context: UIViewControllerRepresentableContext<ImagePicker>) -> UIImagePickerController{
+        
+        let imagePic = UIImagePickerController()
+        imagePic.sourceType = .photoLibrary
+        imagePic.delegate = context.coordinator
+        return imagePic
+    }
+    
+    func updateUIViewController(_ uiViewController: UIImagePickerController, context: UIViewControllerRepresentableContext<ImagePicker>) {
+        
+    }
+    class Coordinator : NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+        var parent : ImagePicker!
+        init(parent1: ImagePicker){
+            parent = parent1
+        }
+        func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+            parent.Shown.toggle()
+        }
+        func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            let image = info[.originalImage] as! UIImage
+            let storage = Storage.storage()
+         //   let user = UserInfo()
+            let userID = "exampleID"
+            storage.reference().child(userID).putData(image.jpegData(compressionQuality: 0.35)!, metadata: nil) {(_, err) in
+            if err != nil {
+                print((err?.localizedDescription)!)
+                return
+                }
+                print("success")
+            }
+            parent.Shown.toggle()
+        }
+    }
+}
 
 struct HomeView_Previews: PreviewProvider {
     static var previews: some View {
