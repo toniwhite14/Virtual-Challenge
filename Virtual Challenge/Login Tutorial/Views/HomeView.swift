@@ -17,6 +17,7 @@ struct HomeView: View {
     @State var shown: Bool = false
     @State var userID: String = ""
     @State var url = URL(string: "")
+    @State var profileImage = WebImage(url: URL(string: "NoUserImage2"))
    // @State private var showScreen: Bool = false
         
         
@@ -25,12 +26,11 @@ struct HomeView: View {
             ZStack {
           
                 VStack {
-                    if url != URL(string: "") {
+                        
                         Button(action: {goContentView()}) {
-                                             
-                                 //   UserImage()
-                                WebImage(url: url)
-                            .renderingMode(.original)
+                               
+                                profileImage
+                                    .renderingMode(.original)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: 150, height: 150)
@@ -39,21 +39,13 @@ struct HomeView: View {
                                     .overlay(Circle().stroke(Color.gray, lineWidth: 4))
                                     .shadow(radius: 10)
                         }
-                    }
-                    else {
-                        Loader()
-                    }
-                    //UserImage()
-           //         Button(action: {goContentView()}) {
-                       
-            //            UserImage()
-                        
-            //        }
+            
+          
                     Button(action: {
                         self.shown.toggle()}) {
                         Text("Upload Profile Picture")
                     }.sheet(isPresented: $shown) {
-                        ImagePicker(userID: self.$userID, Shown: self.$shown)
+                        ImagePicker(userID: self.$userID, profileImage: self.$profileImage, Shown: self.$shown)
                     }
                     
                     Spacer()
@@ -61,9 +53,8 @@ struct HomeView: View {
                     Text("Logged in as \(userInfo.user.name)")
                     Spacer()
            
-            .navigationBarTitle("Virtual Challenge")
-            .navigationBarItems(leading:
-                Button("List") {
+                    .navigationBarTitle("Virtual Challenge")
+                    .navigationBarItems(leading: Button("List") {
                     self.openMenu()
                 }
                   /* NEED TO SORT IMAGE
@@ -72,14 +63,11 @@ struct HomeView: View {
                     .frame(width: 10)
                 } */
                
-                
-                
-                
             , trailing:
                      Button("Log out") {
-                FBAuth.logout { (result) in
-                    print("Logged out")
-                }
+                        FBAuth.logout { (result) in
+                        print("Logged out")
+                        }
             
                 //self.userInfo.isUserAuthenticated = .signedOut
                     }
@@ -92,41 +80,59 @@ struct HomeView: View {
                                  menuClose: self.openMenu)
                     }
                 
-                
-                    
-            .onAppear {
+                .onAppear {
                 guard let uid = Auth.auth().currentUser?.uid else {
-                    return
-                }
-               FBFirestore.retrieveFBUser(uid: uid) { (result) in
-                    switch result {
-                    case.failure(let error):
-                        print(error.localizedDescription)
-                        //Display some kind of alert to your user here. (it shouldn't happen but it might be worth making!)
-                    case.success(let user):
-                        self.userInfo.user = user
-                        self.userID = user.uid
-                    }
-                
-                
+                         return
+                     }
+                FBFirestore.retrieveFBUser(uid: uid) { (result) in
+                     switch result {
+                     case.failure(let error):
+                         print(error.localizedDescription)
+                         //Display some kind of alert to your user here. (it shouldn't happen but it might be worth making!)
+                     case.success(let user):
+                         self.userInfo.user = user
+                         self.userID = user.uid
+                     }
                     let image = "\(self.userID)"
                     print(image)
-                    let storeage = Storage.storage().reference(withPath: image)
-                    storeage.downloadURL{(url, err) in
+                    let storage = Storage.storage().reference(withPath: image)
+                    storage.downloadURL{(url, err) in
                         if err != nil {
-                            print(err?.localizedDescription)
+                            print(err?.localizedDescription as Any)
+                            let noImage = "NoUserImage2.png"
+                            let storage2 = Storage.storage().reference(withPath: noImage)
+                            storage2.downloadURL{(url, err) in
+                                if err != nil {
+                                    print(err?.localizedDescription as Any)
+                                    return
+                                }
+                                self.url = url
+                                self.profileImage = WebImage(url: url)
                             return
+                            }}
+                        else {
+                            self.url = url
+                            self.profileImage = WebImage(url: url)
+                            
                         }
-                        self.url = url!
-                }
+                 
+                    }
+        
                 }
             }
         }
-        
-}
+    }
+    
     func openMenu() {
         self.menuOpen.toggle()
     }
+    
+    func getImage(url: URL){
+        
+        self.url = url
+        
+    }
+    
 }
 
 struct Loader : UIViewRepresentable {
@@ -146,7 +152,8 @@ struct Loader : UIViewRepresentable {
 struct UserImage : View  {
     
     var body: some View {
-        return Image("Face")
+        
+        return Image("NoUserImage")
             .renderingMode(.original)
             .resizable()
             .aspectRatio(contentMode: .fill)
@@ -168,6 +175,7 @@ func goContentView() {
 
 struct ImagePicker: UIViewControllerRepresentable {
     @Binding var userID: String
+    @Binding var profileImage: WebImage
     
     func makeCoordinator() -> ImagePicker.Coordinator {
         return ImagePicker.Coordinator(parent1: self)
@@ -195,6 +203,7 @@ struct ImagePicker: UIViewControllerRepresentable {
             parent.Shown.toggle()
         }
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+            
             let image = info[.originalImage] as! UIImage
             let storage = Storage.storage()
             let userID = parent.userID
@@ -204,6 +213,16 @@ struct ImagePicker: UIViewControllerRepresentable {
                 return
                 }
                 print("success")
+            let image = "\(userID)"
+                 print(image)
+                 let storeage = Storage.storage().reference(withPath: image)
+                 storeage.downloadURL{(url, err) in
+                     if err != nil {
+                        print(err?.localizedDescription as Any)
+                         return
+                     }
+                    self.parent.profileImage = WebImage(url: url!)
+                }
             }
             parent.Shown.toggle()
         }
