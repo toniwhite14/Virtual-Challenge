@@ -8,15 +8,17 @@
 
 import SwiftUI
 import FirebaseAuth
+import SDWebImageSwiftUI
 
 struct ProfileView: View {
     @EnvironmentObject var userInfo: UserInfo
+    @State var profilePicture: WebImage = WebImage(url: URL(string: ""))
     
     var body: some View {
-        VStack {
+        ZStack {
         
         VStack {
-            UserImage()
+            UserImage(profilePicture: $profilePicture)
                 //would like to rezize to ?300 squared
             
             Text(userInfo.user.name)

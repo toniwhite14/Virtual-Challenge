@@ -29,15 +29,16 @@ struct HomeView: View {
                         
                         Button(action: {goContentView()}) {
                                
-                                profileImage
-                                    .renderingMode(.original)
+                              //  profileImage
+                            UserImage(profilePicture: $profileImage)
+                                /*    .renderingMode(.original)
                                     .resizable()
                                     .aspectRatio(contentMode: .fill)
                                     .frame(width: 150, height: 150)
                                     .clipped()
                                     .cornerRadius(150)
                                     .overlay(Circle().stroke(Color.gray, lineWidth: 4))
-                                    .shadow(radius: 10)
+                                    .shadow(radius: 10)*/
                         }
             
           
@@ -150,10 +151,10 @@ struct Loader : UIViewRepresentable {
 
 //NEED TO RETRIVE PICTURE FROM USER
 struct UserImage : View  {
-    
+    @Binding var profilePicture: WebImage
     var body: some View {
         
-        return Image("NoUserImage")
+        return profilePicture
             .renderingMode(.original)
             .resizable()
             .aspectRatio(contentMode: .fill)
