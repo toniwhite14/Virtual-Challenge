@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 51;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -45,6 +45,7 @@
 		04B51A3F2505562600F6F386 /* MapTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B51A3E2505562600F6F386 /* MapTracker.swift */; };
 		04B9706524C316F9006951F4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 04B9706424C316F9006951F4 /* GoogleService-Info.plist */; };
 		04B9706924C31B96006951F4 /* SideMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 04B9706824C31B96006951F4 /* SideMenu.swift */; };
+		2695A5A525076CDC002CC306 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 2695A5A425076CDC002CC306 /* SDWebImageSwiftUI */; };
 		44D5972DAF968D4BAACC936E /* Pods_Virtual_Challenge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FAA5DD9E7B406DB7D59D8E5 /* Pods_Virtual_Challenge.framework */; };
 		C51E78B5AB830D845FA2A33C /* Pods_Virtual_Challenge_Virtual_ChallengeUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1926A209A87C187E8D852F4 /* Pods_Virtual_Challenge_Virtual_ChallengeUITests.framework */; };
 		FC487FE39EECD05ED4E9A39A /* Pods_Virtual_ChallengeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3881DC9EF7668B25E68E212B /* Pods_Virtual_ChallengeTests.framework */; };
@@ -129,6 +130,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2695A5A525076CDC002CC306 /* SDWebImageSwiftUI in Frameworks */,
 				44D5972DAF968D4BAACC936E /* Pods_Virtual_Challenge.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -318,6 +320,9 @@
 			dependencies = (
 			);
 			name = "Virtual Challenge";
+			packageProductDependencies = (
+				2695A5A425076CDC002CC306 /* SDWebImageSwiftUI */,
+			);
 			productName = "Virtual Challenge";
 			productReference = 045B754E24B2550600CCC7F3 /* Virtual Challenge.app */;
 			productType = "com.apple.product-type.application";
@@ -393,6 +398,9 @@
 				Base,
 			);
 			mainGroup = 045B754524B2550600CCC7F3;
+			packageReferences = (
+				2695A5A325076CDC002CC306 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
+			);
 			productRefGroup = 045B754F24B2550600CCC7F3 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -904,6 +912,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		2695A5A325076CDC002CC306 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SDWebImage/SDWebImageSwiftUI.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		2695A5A425076CDC002CC306 /* SDWebImageSwiftUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 2695A5A325076CDC002CC306 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */;
+			productName = SDWebImageSwiftUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
 		045B755524B2550600CCC7F3 /* Virtual_Challenge.xcdatamodeld */ = {

@@ -9,12 +9,14 @@
 import SwiftUI
 import FirebaseAuth
 import FirebaseStorage
+import SDWebImageSwiftUI
 
 struct HomeView: View {
     @EnvironmentObject var userInfo: UserInfo
     @State var menuOpen: Bool = false
     @State var shown: Bool = false
     @State var userID: String = ""
+    @State var url = URL(string: "")
    // @State private var showScreen: Bool = false
         
         
@@ -23,12 +25,30 @@ struct HomeView: View {
             ZStack {
           
                 VStack {
-                    //UserImage()
-                    Button(action: {goContentView()}) {
-                       
-                        UserImage()
-                        
+                    if url != URL(string: "") {
+                        Button(action: {goContentView()}) {
+                                             
+                                 //   UserImage()
+                                WebImage(url: url)
+                            .renderingMode(.original)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fill)
+                                    .frame(width: 150, height: 150)
+                                    .clipped()
+                                    .cornerRadius(150)
+                                    .overlay(Circle().stroke(Color.gray, lineWidth: 4))
+                                    .shadow(radius: 10)
+                        }
                     }
+                    else {
+                        Loader()
+                    }
+                    //UserImage()
+           //         Button(action: {goContentView()}) {
+                       
+            //            UserImage()
+                        
+            //        }
                     Button(action: {
                         self.shown.toggle()}) {
                         Text("Upload Profile Picture")
@@ -66,6 +86,7 @@ struct HomeView: View {
                 )
                 
             }
+                
                     SideMenu(width: 270,
                                  isOpen: self.menuOpen,
                                  menuClose: self.openMenu)
@@ -86,6 +107,18 @@ struct HomeView: View {
                         self.userInfo.user = user
                         self.userID = user.uid
                     }
+                
+                
+                    let image = "\(self.userID)"
+                    print(image)
+                    let storeage = Storage.storage().reference(withPath: image)
+                    storeage.downloadURL{(url, err) in
+                        if err != nil {
+                            print(err?.localizedDescription)
+                            return
+                        }
+                        self.url = url!
+                }
                 }
             }
         }
@@ -96,10 +129,22 @@ struct HomeView: View {
     }
 }
 
+struct Loader : UIViewRepresentable {
+    func makeUIView(context: UIViewRepresentableContext<Loader>) -> UIActivityIndicatorView {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.startAnimating()
+        return indicator
+    }
+    
+    func updateUIView(_ uiView: UIActivityIndicatorView, context: UIViewRepresentableContext<Loader>) {
+      
+    }
+}
 
 
 //NEED TO RETRIVE PICTURE FROM USER
-struct UserImage : View {
+struct UserImage : View  {
+    
     var body: some View {
         return Image("Face")
             .renderingMode(.original)
