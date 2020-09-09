@@ -12,25 +12,36 @@ import SwiftUI
 import MapKit
 
 struct MapTracker: View {
+    @Environment(\.presentationMode) var presentationMode
     @State private var checkpoints = [MKPointAnnotation]()
     @State private var centreCoordinate = CLLocationCoordinate2D()
     @State private var locationManager = CLLocationManager()
-    @State var theDistance = "Tap map to plot route"
+    @State private var theDistance = "Tap map to plot route"
+    @State private var title = ""
     @State private var showAlert = false
+    //var new : Bool = true
     
     var body: some View {
-        VStack {
+        ZStack {
+        Color.black
+            .edgesIgnoringSafeArea(.all)
+        VStack(alignment: .center) {
+        //    if new == true {
+            TextField("Enter a title for your challenge", text: $title)
+                .textFieldStyle(RoundedBorderTextFieldStyle())
+                .padding()
+                .border(Color.purple)
+                .autocapitalization(.sentences)
+         //   }
+       
             mapView(checkpoints: self.$checkpoints, centreCoordinate: $centreCoordinate, locationManager: $locationManager, theDistance: $theDistance)
-                    .edgesIgnoringSafeArea(.top)
-                
-                        
-                VStack(alignment: .leading) {
-                    Text(theDistance)
-                        .font(.title)
-                        .foregroundColor(Color.white)
+                  //  .edgesIgnoringSafeArea(.top)
+            
+
+                Text(theDistance)
+                    .font(.headline)
+                    .foregroundColor(Color.white)
                     
-                }
-                
             HStack(alignment: .center) {
                    
                     VStack(alignment: .center) {
@@ -40,12 +51,12 @@ struct MapTracker: View {
                         }*/
                         Button(action: {
                             self.showAlert = true
-                            self.save()}) {
+                            }) {
                            
                             Text("Save Challenge")
                         }.buttonStyle(makeButtonStyle())
                         .alert(isPresented: $showAlert) {
-                            Alert(title: Text("Saving Challenge"), message: Text("Have you finshed editing your challenge route?"), primaryButton: .default(Text("Save"), action: self.save), secondaryButton: .cancel())
+                            Alert(title: Text("Saving Challenge"), message: Text("Have you finshed editing your challenge route?"), primaryButton: .default(Text("Save").bold(), action: self.save), secondaryButton: .cancel())
                         }
                     }
                     Spacer()
@@ -67,10 +78,13 @@ struct MapTracker: View {
 
             }
         .background(Color.black)
-        
+        }
     }
     func save() {
         print("saving...")
+        
+        self.presentationMode.wrappedValue.dismiss()
+        
     }
     
     func removeAll() {
@@ -115,8 +129,9 @@ struct makeButtonStyle: ButtonStyle {
 }
 
 struct MapTracker_Previews: PreviewProvider {
+    
     static var previews: some View {
-        MapTracker()
+        ContentView()
     }
 }
 
@@ -148,6 +163,7 @@ struct mapView: UIViewRepresentable {
            if CLLocationManager.locationServicesEnabled() {
                locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
            //    locationManager.startUpdatingLocation()
+
                    var locValue:CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 51.5634, longitude: 0.6939)
                    if self.locationManager.location?.coordinate != nil {
                        locValue = self.locationManager.location!.coordinate
@@ -298,13 +314,14 @@ struct mapView: UIViewRepresentable {
             case .authorizedWhenInUse:
               return
             case .authorizedAlways:
-              parent.locationManager.allowsBackgroundLocationUpdates = true
-              parent.locationManager.pausesLocationUpdatesAutomatically = false
+        //      parent.locationManager//.allowsBackgroundLocationUpdates = true
+      //        parent.locationManager//.pausesLocationUpdatesAutomatically = false
               return
             @unknown default:
               break
             }
         //    parent.locationManager.startUpdatingLocation()
+
         }
     }
 }

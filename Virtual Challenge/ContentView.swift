@@ -10,28 +10,7 @@ import SwiftUI
 
 struct ContentView: View {
     @State var menuOpen: Bool = false
-    /*@State var menuOpen: Bool = false
-        
-        var body: some View {
-            ZStack {
-                if !self.menuOpen {
-                    Button(action: {
-                        self.openMenu()
-                    }, label: {
-                        Text("Open")
-                    })
-                }
-                
-                SideMenu(width: 270,
-                         isOpen: self.menuOpen,
-                         menuClose: self.openMenu)
-            }
-        }
-        
-        func openMenu() {
-            self.menuOpen.toggle()
-        }
-    }*/
+  
 
     var body: some View {
         NavigationView {
@@ -54,7 +33,7 @@ struct ContentView: View {
             
            //     .padding()
           //      .offset(y: -70) //sets height for bottom VStack.
-                    
+
                 .navigationBarTitle(Text("Challenge Name"), displayMode: .inline)
                 .navigationBarItems(leading:
                     Button("List") {

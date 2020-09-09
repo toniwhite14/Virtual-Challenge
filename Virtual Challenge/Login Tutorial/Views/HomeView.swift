@@ -27,7 +27,7 @@ struct HomeView: View {
           
                 VStack {
                         
-                        Button(action: {goContentView()}) {
+                    Button(action: {self.goContentView()}) {
                                
                               //  profileImage
                             UserImage(profilePicture: $profileImage)
@@ -134,6 +134,15 @@ struct HomeView: View {
         
     }
     
+    //TO MOVE TO CONTENTVIEW
+    func goContentView() {
+        if let window = UIApplication.shared.windows.first {
+            window.rootViewController = UIHostingController(rootView: ProfileView(userInfo: _userInfo, profilePicture: self.profileImage).environmentObject(userInfo))
+            window.makeKeyAndVisible()
+        }
+    }
+
+    
 }
 
 struct Loader : UIViewRepresentable {
@@ -164,13 +173,6 @@ struct UserImage : View  {
             .overlay(Circle().stroke(Color.gray, lineWidth: 4))
             .shadow(radius: 10)
         //    .padding(.bottom, 75)
-    }
-}
-//TO MOVE TO CONTENTVIEW
-func goContentView() {
-    if let window = UIApplication.shared.windows.first {
-        window.rootViewController = UIHostingController(rootView: ContentView())
-        window.makeKeyAndVisible()
     }
 }
 
