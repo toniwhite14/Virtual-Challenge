@@ -11,6 +11,7 @@ enum FBKeys {
     
     enum CollectionPath {
         static let users = "users"
+        static let challenges = "Challenges"
     }
     
     enum User {
@@ -19,5 +20,10 @@ enum FBKeys {
         static let email = "email"
         
         // Add app specific keys here
+    }
+    enum Challenge {
+        static let user = "user"
+        static let title = "title"
+        static let checkpoints = "checkpoints"
     }
 }

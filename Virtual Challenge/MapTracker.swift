@@ -10,10 +10,14 @@
 //
 import SwiftUI
 import MapKit
+import Firebase
 
 struct MapTracker: View {
     @Environment(\.presentationMode) var presentationMode
+    @ObservedObject var session = FirebaseSession()
+    @State var uid: String
     @State private var checkpoints = [MKPointAnnotation]()
+  //  @State private var coordinates = [GeoPoint]()
     @State private var centreCoordinate = CLLocationCoordinate2D()
     @State private var locationManager = CLLocationManager()
     @State private var theDistance = "Tap map to plot route"
@@ -34,7 +38,7 @@ struct MapTracker: View {
                 .autocapitalization(.sentences)
          //   }
        
-            mapView(checkpoints: self.$checkpoints, centreCoordinate: $centreCoordinate, locationManager: $locationManager, theDistance: $theDistance)
+            mapView(checkpoints: self.$checkpoints,  centreCoordinate: $centreCoordinate, locationManager: $locationManager, theDistance: $theDistance)
                   //  .edgesIgnoringSafeArea(.top)
             
 
@@ -82,7 +86,11 @@ struct MapTracker: View {
     }
     func save() {
         print("saving...")
-        
+        var getCoord: [GeoPoint] = []
+        for checkpoint in checkpoints {
+            getCoord.append(GeoPoint(latitude: checkpoint.coordinate.latitude, longitude: checkpoint.coordinate.longitude))
+        }
+        session.uploadChallenge(user: self.uid,title: title, checkpoints: getCoord)
         self.presentationMode.wrappedValue.dismiss()
         
     }
@@ -137,6 +145,7 @@ struct MapTracker_Previews: PreviewProvider {
 
 struct mapView: UIViewRepresentable {
     @Binding var checkpoints : [MKPointAnnotation]
+ //   @Binding var coordinates : [GeoPoint]
  //   @Binding var polylines : [MKOverlay]
     @Binding var centreCoordinate: CLLocationCoordinate2D
     @Binding var locationManager : CLLocationManager
@@ -169,7 +178,7 @@ struct mapView: UIViewRepresentable {
                        locValue = self.locationManager.location!.coordinate
 
                    }
-                   let coordinate = CLLocationCoordinate2D(
+                   let coordinate =  CLLocationCoordinate2D(
                        latitude: locValue.latitude, longitude: locValue.longitude)
              //   self.centreCoordinate = coordinate
                 
@@ -196,7 +205,7 @@ struct mapView: UIViewRepresentable {
         var theDistance : CLLocationDistance = 0
         let distanceFormat = MKDistanceFormatter()
         distanceFormat.units = .default
- 
+        
         if checkpoints != [] {
             uiView.removeOverlays(uiView.overlays)
             
@@ -226,12 +235,12 @@ struct mapView: UIViewRepresentable {
                             theDistance = theDistance +   (direct?.routes.first!.distance)!
                
                             self.theDistance = distanceFormat.string(fromDistance: theDistance)
-                            
+                      
                             }
                         }
-                        
+                     
                     }
-            
+
                 }
             
             }

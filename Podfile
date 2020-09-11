@@ -11,6 +11,7 @@ target 'Virtual Challenge' do
   pod 'Firebase/Auth'
   pod 'Firebase/Firestore'
   pod 'Firebase/Storage'
+  pod 'Firebase/Database'
 
 
   target 'Virtual ChallengeTests' do

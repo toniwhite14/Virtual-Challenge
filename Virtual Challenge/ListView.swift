@@ -84,10 +84,10 @@ struct ListView: View {
 
 //TO MOVE TO MAPTRACKER
 func goMapTracker() {
-    if let window = UIApplication.shared.windows.first {
-        window.rootViewController = UIHostingController(rootView: MapTracker())
-        window.makeKeyAndVisible()
-    }
+//    if let window = UIApplication.shared.windows.first {
+ //       window.rootViewController = UIHostingController(rootView: MapTracker())
+ //       window.makeKeyAndVisible()
+ //   }
 }
 
 struct ListView_Previews: PreviewProvider {

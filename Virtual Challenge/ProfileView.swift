@@ -40,7 +40,7 @@ struct ProfileView: View {
                 Text("Create New Challenge")
                 .buttonStyle(makeButtonStyle())
                 .sheet(isPresented: self.$showScreen) {
-                    MapTracker()
+                    MapTracker(uid: self.userInfo.user.uid)
                 }
             }
         .navigationBarTitle(Text(userInfo.user.name), displayMode: .inline)
