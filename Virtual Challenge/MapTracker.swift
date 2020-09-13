@@ -90,6 +90,7 @@ struct MapTracker: View {
         for checkpoint in checkpoints {
             getCoord.append(GeoPoint(latitude: checkpoint.coordinate.latitude, longitude: checkpoint.coordinate.longitude))
         }
+        
         session.uploadChallenge(id: "", user: self.uid, title: title, checkpoints: getCoord, distance: theDistance, completed: false, active: true)
         self.presentationMode.wrappedValue.dismiss()
         

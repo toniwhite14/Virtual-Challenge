@@ -56,7 +56,7 @@ struct ProfileView: View {
                     }.padding()
                     .background(Color(.black))
                     .foregroundColor(.white)
-                List(challenges, id: \.title) { challenge in
+                List(session.challenges, id: \.title) { challenge in
  
                     ChallengeRow(challenge: challenge)
                 }
@@ -75,8 +75,8 @@ struct ProfileView: View {
                                    isOpen: self.menuOpen,
                                    menuClose: self.openMenu)
             }.onAppear(){
-                self.getChallenges(user: self.userInfo.user.uid)
-                
+              //  self.getChallenges(user: self.userInfo.user.uid)
+                self.session.getChallenges(user: self.userInfo.user.uid)
            
             }
         }
@@ -85,7 +85,7 @@ struct ProfileView: View {
         self.menuOpen.toggle()
     }
     
-    func getChallenges(user: String)  {
+/*    func getChallenges(user: String)  {
      //   var challenges: [Challenge] = []
         
             session.ref.whereField("user", isEqualTo: user).getDocuments { (querySnapshot, error) in
@@ -105,7 +105,7 @@ struct ProfileView: View {
         }
             
        
-    }
+    }*/
 }
 
 
@@ -122,7 +122,8 @@ struct ChallengeRow: View {
             Toggle(isOn: $challenge.active){
                 
                 EmptyView()
-            }.onReceive([self.challenge.active].publisher.first()) { (value) in
+                }.onReceive([self.challenge.active].publisher.first()) { (value) in
+                 //   self.challenge.active.toggle()
                 self.session.updateChallenge(id: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, distance: self.challenge.distance, completed: self.challenge.completed, active: self.challenge.active)
             }
         }
