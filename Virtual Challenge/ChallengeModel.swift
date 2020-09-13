@@ -14,92 +14,91 @@ import FirebaseAnalytics
 import FirebaseDatabase
 import MapKit
 
-/*class ChallengeModel: ObservableObject {
-    
-    @Published var challenge: Challenge
-    @Published var challenges: [Challenge]
-    @Published var modified = false
-    private var cancellables = Set<AnyCancellable>()
-    
-    init(challenge: Challenge = Challenge(user: "", title: "", checkpoints: [])) {
-        self.challenge = challenge
-        
-        self.$challenge
-        .dropFirst()
-            .sink { [weak self] challenge in
-                self?.modified = true
-        }
-        .store(in: &self.cancellables)
-    }
-    
-    private var db = Firestore.firestore()
-    func fetchData() {
-        db.collection("Challenges").addSnapshotListener{ (querySnapshot, error) in
-            guard let documents = querySnapshot?.documents else {
-                print("No documents")
-                return
-            }
-            self.challenges = documents.compactMap {queryDocumentSnapshot -> Challenge in
-                let data = queryDocumentSnapshot.data()
-                let user = data["user"] as? String ?? ""
-                let title = data["title"] as? String ?? ""
-                let checkpoints = data["checkpoints"] as? [CLLocationCoordinate2D] ?? []
-                return Challenge(user: user, title: title, checkpoints: checkpoints)
-            
-            }
-        }
-    }
-    func addChallenge(_ challenge: Challenge) {
-        do {
-            
-            let _ = try db.collection("Challenges").addDocument(data: challenge)
-        }
-        catch {
-            print(error)
-        }
-    }
-    
-}*/
 
 
 struct Challenge: Identifiable {
     @EnvironmentObject var userInfo: UserInfo
-    var ref: DatabaseReference?
+ //   var ref: DatabaseReference?
     var id: String
-  //  var user: String
+    var user: String
     var title: String
     var checkpoints: [GeoPoint]
+    var distance: String
+    var completed: Bool
+    var active: Bool
     
-    init(user: String, title: String, checkpoints: [GeoPoint]) {
-        self.id = user
-        self.ref = nil
-      //  self.user = user
+    init(id: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, completed: Bool, active: Bool) {
+        self.id = id
+     //   self.ref = nil
+        self.user = user
         self.title = title
         self.checkpoints = checkpoints
+        self.distance = distance
+        self.completed = completed
+        self.active = active
     }
     
-    init?(snapshot: DataSnapshot){
+    init?(snapshot: [String: Any], id: String){
         
-        guard
-                let value = snapshot.value as? [String: AnyObject],
-                let title = value["title"] as? String,
-                let id = value["user"] as? String,
-                let checkpoints = value["checkpoints"] as? [GeoPoint]
-                else {
-                    return nil
-                }
-            self.ref = snapshot.ref
-            self.id = id
-            self.title = title
-            self.checkpoints = checkpoints
+  //      guard
+      //  let id = id
+        var user = ""
+        var title = ""
+        var checkpoints : [GeoPoint] = []
+        var distance = ""
+        var completed = false
+        var active = true
+        
+        for s in snapshot {
+            if s.key == "user" {
+                user = s.value as! String
+                print(user)
+            }
+            if s.key == "title" {
+                title = s.value as! String
+                print(title)
+            }
+            if s.key == "checkpoints" {
+                checkpoints = s.value as! [GeoPoint]
+                print(checkpoints)
+            }
+            if s.key == "distance" {
+                distance = s.value as! String
+                print(distance)
+            }
+            if s.key == "completed" {
+                completed = s.value as! Bool
+                print(completed)
+            }
+            if s.key == "active" {
+                active = s.value as! Bool
+                print(active)
+            }
+        }
+
+        //        else {
+        //            return nil
+        //        }
+      //      self.ref = snapshot.ref
+        self.id = id
+        self.user = user
+        self.title = title
+        self.checkpoints = checkpoints
+        self.distance = distance
+        self.completed = completed
+        self.active = active
          //   self.id = snapshot.key
         
     }
     func toAnyObject() -> Any {
         return [
-            "user": id,
+          //  "id": id,
+            "user": user,
             "title": title,
             "checkpoints": checkpoints,
+            "distance": distance,
+            "completed": completed,
+            "active": active
         ]
     }
 
