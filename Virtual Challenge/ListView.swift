@@ -23,10 +23,26 @@ struct ListView: View {
                 Button(action: goMapTracker) {
                     Text("Set New Challenge")
                 }
-
-                Text("Current Challenges").onTapGesture {
-                    print("Current Challenges")
+                
+                Button(action: goCurrentChallengesList) {
+                    Text("Current Challenges")
                 }
+                
+                Button(action: goCompletedChallengesList) {
+                    Text("Completed Challenges")
+                }
+                
+                Button(action: goFriendsView) {
+                    Text("Friends")
+                }
+                
+                Button(action: goProfileView) {
+                    Text("Profile")
+                }
+/*
+              //  Text("Current Challenges").onTapGesture {
+                //    print("Current Challenges")
+                //}
                 
                 Text("Challenge History").onTapGesture {
                     print("Challenge History")
@@ -38,7 +54,7 @@ struct ListView: View {
                 
                 Text("Profile").onTapGesture {
                     print("Profile")
-                }
+                } */
                 
                 Text("Log Out").onTapGesture {
                     print("Log Out")
@@ -77,10 +93,11 @@ struct ListView: View {
             }) */
             
             
-            }
-        }
-}
-}
+            } //NAVIGATION VIEW
+        } //HSTACK
+    } //BODYVIEW
+} //VIEW
+
 
 //TO MOVE TO MAPTRACKER
 func goMapTracker() {
@@ -88,6 +105,35 @@ func goMapTracker() {
  //       window.rootViewController = UIHostingController(rootView: MapTracker())
  //       window.makeKeyAndVisible()
  //   }
+}
+
+//TO MOVE TO CURRENT CHALLENGES
+func goCurrentChallengesList() {
+    if let window = UIApplication.shared.windows.first {
+        window.rootViewController = UIHostingController(rootView: CurrentChallengesList())
+        window.makeKeyAndVisible()
+    }
+}
+
+//TO MOVE TO COMPLETED CHALLENGES
+    func goCompletedChallengesList() {
+        if let window = UIApplication.shared.windows.first {
+            window.rootViewController = UIHostingController(rootView: CompletedChallengesList())
+        }
+    }
+
+//TO MOVE TO FRIENDSVIEW
+func goFriendsView() {
+    if let window = UIApplication.shared.windows.first {
+        window.rootViewController = UIHostingController(rootView: FriendsView())
+    }
+}
+
+//TO MOVE TO PROFILEVIEW
+func goProfileView() {
+    if let window = UIApplication.shared.windows.first {
+        window.rootViewController = UIHostingController(rootView: ProfileView())
+    }
 }
 
 struct ListView_Previews: PreviewProvider {
