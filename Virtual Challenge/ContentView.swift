@@ -28,6 +28,7 @@ struct ContentView: View {
                 
                   //  mapView(checkpoints: session.challengeForUpdate.checkpoints, theDistance: session.challengeForUpdate.distance)
                // MapTracker()
+             
                 mapView(challenge: $challenge, update: $update)
              //   Spacer()  ?needed
                 
