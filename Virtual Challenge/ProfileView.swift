@@ -42,7 +42,7 @@ struct ProfileView: View {
                 Text("Create New Challenge")
                 .buttonStyle(makeButtonStyle())
                 .sheet(isPresented: self.$showScreen) {
-                    MapTracker(uid: self.userInfo.user.uid)
+                    MapTracker(uid: self.userInfo.user.uid, id: "")
                 }
             }
             Spacer()
@@ -56,9 +56,10 @@ struct ProfileView: View {
                     }.padding()
                     .background(Color(.black))
                     .foregroundColor(.white)
-                List(session.challenges, id: \.title) { challenge in
- 
-                    ChallengeRow(challenge: challenge)
+                List(session.challenges, id: \.id) { challenge in
+                    
+                        ChallengeRow(challenge: challenge)
+                    }
                 }
             }
           
@@ -80,7 +81,7 @@ struct ProfileView: View {
            
             }
         }
-    }
+    
     func openMenu() {
         self.menuOpen.toggle()
     }
@@ -106,25 +107,28 @@ struct ProfileView: View {
             
        
     }*/
-}
 
+}
 
 struct ChallengeRow: View {
    @State var challenge: Challenge
     @ObservedObject var session = FirebaseSession()
     
     var body: some View {
-        HStack {
-            Text(challenge.title)
-            Spacer()
-            Text(challenge.distance)
-            Spacer()
-            Toggle(isOn: $challenge.active){
+        NavigationLink(destination: ContentView(challenge: $challenge)) {
+            HStack {
+                Text(challenge.title)
+                Spacer()
+                Text(challenge.distance)
+                Spacer()
+                Toggle(isOn: $challenge.active){
                 
                 EmptyView()
                 }.onReceive([self.challenge.active].publisher.first()) { (value) in
                  //   self.challenge.active.toggle()
-                self.session.updateChallenge(id: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, distance: self.challenge.distance, completed: self.challenge.completed, active: self.challenge.active)
+                    self.session.updateChallenge(id: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, annotations: self.challenge.annotations, distance: self.challenge.distance, completed: self.challenge.completed, active: self.challenge.active)
+                
+                }
             }
         }
     }

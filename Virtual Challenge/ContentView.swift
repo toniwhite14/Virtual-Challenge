@@ -7,19 +7,27 @@
 //
 
 import SwiftUI
+import MapKit
+import Firebase
 
 struct ContentView: View {
+    @ObservedObject var session = FirebaseSession()
     @State var menuOpen: Bool = false
-  
+    @Binding var challenge: Challenge
+ //   @State var checkpoints : [GeoPoint] = []
+  //  @State var annotations : [MKPointAnnotation]
+    @State private var distance = ""
+    @State private var update = true
 
     var body: some View {
-        NavigationView {
-            ZStack {
-                VStack(){
-                    MapPage()
+    
+        ZStack {
+      
+            VStack(alignment: .center){
+                
+                  //  mapView(checkpoints: session.challengeForUpdate.checkpoints, theDistance: session.challengeForUpdate.distance)
                // MapTracker()
-                    .frame(height:500)
-                    .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
+                mapView(challenge: challenge, update: $update)
              //   Spacer()  ?needed
                 
             //    VStack(alignment: .center) {
@@ -34,22 +42,26 @@ struct ContentView: View {
            //     .padding()
           //      .offset(y: -70) //sets height for bottom VStack.
 
-                .navigationBarTitle(Text("Challenge Name"), displayMode: .inline)
-                .navigationBarItems(leading:
-                    Button("List") {
+                    .navigationBarTitle(Text(challenge.title), displayMode: .inline)
+                    .navigationBarItems(leading:
+                    Button("Menu") {
                         self.openMenu()
                     }
                     , trailing: Text("View"))
                     Spacer()
                     
-                }
+                }     .frame(height:500)
+                      .edgesIgnoringSafeArea(/*@START_MENU_TOKEN@*/.all/*@END_MENU_TOKEN@*/)
                 
             SideMenu(width: 270,
                          isOpen: self.menuOpen,
                          menuClose: self.openMenu)
-            }
-            
+        }.onAppear(){
+          
+           // print("annotations: \(self.challenge.annotations)")
         }
+            
+        
             
         }
         
@@ -67,10 +79,4 @@ struct ContentView: View {
    
         
 
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView()
-    }
-}
 

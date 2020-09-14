@@ -16,13 +16,17 @@ struct MapTracker: View {
     @Environment(\.presentationMode) var presentationMode
     @ObservedObject var session = FirebaseSession()
     @State var uid: String
-    @State private var checkpoints = [MKPointAnnotation]()
-  //  @State private var coordinates = [GeoPoint]()
+//    @State private var checkpoints = [GeoPoint]()
+    @State private var annotations = [MKPointAnnotation]()
     @State private var centreCoordinate = CLLocationCoordinate2D()
     @State private var locationManager = CLLocationManager()
-    @State private var theDistance = "Tap map to plot route"
-    @State private var title = ""
+  //  @State private var theDistance = "Tap map to plot route"
+  //  @State private var title = ""
     @State private var showAlert = false
+    @State private var update = false
+    @State var challenge: Challenge = Challenge(id: "", user: "", title: "", checkpoints: [], annotations: [], distance: "", completed: false, active: true)
+    @State var id: String = ""
+ //   @State var challengeForUpdate = Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: false)
     //var new : Bool = true
     
     var body: some View {
@@ -31,18 +35,18 @@ struct MapTracker: View {
             .edgesIgnoringSafeArea(.all)
         VStack(alignment: .center) {
         //    if new == true {
-            TextField("Enter a title for your challenge", text: $title)
+            TextField("Enter a title for your challenge", text: $challenge.title)
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
                 .border(Color.purple)
                 .autocapitalization(.sentences)
          //   }
        
-            mapView(checkpoints: self.$checkpoints,  centreCoordinate: $centreCoordinate, locationManager: $locationManager, theDistance: $theDistance)
+            mapView( challenge: challenge, update: $update)
                   //  .edgesIgnoringSafeArea(.top)
             
 
-                Text(theDistance)
+            Text(challenge.distance)
                     .font(.headline)
                     .foregroundColor(Color.white)
                     
@@ -80,49 +84,46 @@ struct MapTracker: View {
                 .padding()
                 Spacer()
 
-            }
-        .background(Color.black)
         }
+        }
+  
+        .background(Color.black)
+        
     }
+   
+    
     func save() {
         print("saving...")
         var getCoord: [GeoPoint] = []
-        for checkpoint in checkpoints {
-            getCoord.append(GeoPoint(latitude: checkpoint.coordinate.latitude, longitude: checkpoint.coordinate.longitude))
+        for anno in challenge.annotations {
+            let coordinate = anno.coordinate
+            getCoord.append(GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude))
         }
         
-        session.uploadChallenge(id: "", user: self.uid, title: title, checkpoints: getCoord, distance: theDistance, completed: false, active: true)
+        session.uploadChallenge(id: "", user: self.uid, title: challenge.title, checkpoints: getCoord, annotations: [], distance: challenge.distance, completed: false, active: true)
         self.presentationMode.wrappedValue.dismiss()
         
     }
     
     func removeAll() {
-        self.theDistance = "Tap map to plot route"
-        self.checkpoints.removeAll()
+        self.challenge.distance = "Tap map to plot route"
+        self.challenge.annotations.removeAll()
   //      self.polylines.removeAll()
         
     }
     func removeLast() {
         
-        if checkpoints.count > 2 {
-            self.checkpoints.removeLast()
+        if self.challenge.annotations.count > 2 {
+            self.challenge.annotations.removeLast()
             
         }
-        else if checkpoints.count > 0 {
-            self.checkpoints.removeLast()
-            theDistance = "Tap map to plot route"
+        else if self.challenge.annotations.count > 0 {
+            self.challenge.annotations.removeLast()
+            self.challenge.distance = "Tap map to plot route"
         }
         else {
-            theDistance = "Tap map to plot route"
+            self.challenge.distance = "Tap map to plot route"
         }
-    }
-    
-    func addPin() {
-        
-        let newPin = MKPointAnnotation()
-        newPin.coordinate = self.centreCoordinate
-        self.checkpoints.append(newPin)
-        
     }
 }
 struct makeButtonStyle: ButtonStyle {
@@ -140,25 +141,33 @@ struct makeButtonStyle: ButtonStyle {
 struct MapTracker_Previews: PreviewProvider {
     
     static var previews: some View {
-        ContentView()
+        MapTracker(uid: "", id: "")
     }
 }
 
 struct mapView: UIViewRepresentable {
-    @Binding var checkpoints : [MKPointAnnotation]
- //   @Binding var coordinates : [GeoPoint]
- //   @Binding var polylines : [MKOverlay]
-    @Binding var centreCoordinate: CLLocationCoordinate2D
-    @Binding var locationManager : CLLocationManager
+  //  @State var checkpoints : [GeoPoint] = []
+//    @State var annotations : [MKPointAnnotation]
+
+//    @Binding var centreCoordinate: CLLocationCoordinate2D
+    var locationManager = CLLocationManager()
  //   @Binding var distance : CLLocationDistance
-    @Binding var theDistance : String
+ //   @Binding var id : String
+    @State var challenge: Challenge
+//    @Binding var theDistance : String
+    @ObservedObject var session = FirebaseSession()
+    @Binding var update : Bool
     
     func setupManager() {
         
      //    locationManager.desiredAccuracy = kCLLocationAccuracyBest
          locationManager.requestWhenInUseAuthorization()
          locationManager.requestAlwaysAuthorization()
-       
+      //  self.session.getChallengeForUpdate(id: id)
+     //   if update{
+     //            self.annotations = self.session.challengeForUpdate.annotations
+     //        }
+        
      }
     
     func makeCoordinator() -> Coordinator {
@@ -166,10 +175,13 @@ struct mapView: UIViewRepresentable {
     }
     
     func makeUIView(context: Context) -> MKMapView {
+  
         setupManager()
+
+    
         let map = MKMapView()
       //  map.showsUserLocation = true
-        
+ 
            if CLLocationManager.locationServicesEnabled() {
                locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
            //    locationManager.startUpdatingLocation()
@@ -195,8 +207,9 @@ struct mapView: UIViewRepresentable {
         
         map.addGestureRecognizer(tap)
         map.delegate = context.coordinator
+      //  map.addAnnotations(challenge.annotations)
         locationManager.delegate = context.coordinator
-
+  
         return map
     }
     
@@ -206,58 +219,62 @@ struct mapView: UIViewRepresentable {
         var theDistance : CLLocationDistance = 0
         let distanceFormat = MKDistanceFormatter()
         distanceFormat.units = .default
-        
-        if checkpoints != [] {
-            uiView.removeOverlays(uiView.overlays)
+ 
+     //   print(self.annotations)
+        if self.challenge.annotations != [] {
+                uiView.removeOverlays(uiView.overlays)
             
-            if checkpoints.count >= 1 {
+            if self.challenge.annotations.count >= 1 {
              //   var lines: [MKOverlay] = []
-                let req = MKDirections.Request()
+                    let req = MKDirections.Request()
                 
-                for (k, item) in checkpoints.enumerated() {
+                    for (k, item) in self.challenge.annotations.enumerated() {
                     
-                    if k < (checkpoints.count-1) {
+                        if k < (self.challenge.annotations.count-1) {
                         
-                        req.source = MKMapItem(placemark: MKPlacemark(coordinate: item.coordinate))
-                        req.destination = MKMapItem(placemark: MKPlacemark(coordinate: checkpoints[k+1].coordinate))
+                            req.source = MKMapItem(placemark: MKPlacemark(coordinate: item.coordinate))
+                            req.destination = MKMapItem(placemark: MKPlacemark(coordinate: self.challenge.annotations[k+1].coordinate))
                     
-                        let directions = MKDirections(request: req)
+                            let directions = MKDirections(request: req)
                     
-                        directions.calculate {(direct, err) in
-                        if err != nil {
-                                print((err?.localizedDescription)!)
-                                return
-                            }
-                            if direct?.routes.first?.polyline != nil {
+                            directions.calculate {(direct, err) in
+                                if err != nil {
+                                    print((err?.localizedDescription)!)
+                                    return
+                                }
+                                if direct?.routes.first?.polyline != nil {
                                 
-                            let polyline = direct?.routes.first?.polyline
+                                    let polyline = direct?.routes.first?.polyline
                        
-                            uiView.addOverlay(polyline!)
-                            theDistance = theDistance +   (direct?.routes.first!.distance)!
+                                    uiView.addOverlay(polyline!)
+                                    theDistance = theDistance +   (direct?.routes.first!.distance)!
                
-                            self.theDistance = distanceFormat.string(fromDistance: theDistance)
+                                    self.challenge.distance = distanceFormat.string(fromDistance: theDistance)
                       
+                                }
                             }
-                        }
-                     
+                       
+
                     }
-
-                }
             
-            }
+                }
 
-        
+            }
         }
-  
+
     }
 
     
     func updateUIView(_ uiView: MKMapView, context: Context) {
         
-        if checkpoints.count != uiView.annotations.count {
+ 
+     
+        if challenge.annotations.count != uiView.annotations.count {
             
             uiView.removeAnnotations(uiView.annotations)
-            uiView.addAnnotations(checkpoints)
+       
+            uiView.addAnnotations(challenge.annotations)
+        
             uiView.removeOverlays(uiView.overlays)
             
             getDirctions(uiView)
@@ -279,17 +296,19 @@ struct mapView: UIViewRepresentable {
                     let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
                     let annotation = MKPointAnnotation()
                     annotation.coordinate = coordinate
-                    parent.checkpoints.append(annotation)
-              //  mapView.addAnnotation(annotation)
+               //     parent.checkpoints.append(GeoPoint(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude))
+                    parent.challenge.annotations.append(annotation)
+            //        mapView.addAnnotation(annotation)
                     
                 }
             }
             
         }
+      
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             let pin = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
             pin.isDraggable = true
-            pin.pinTintColor = .red
+            pin.pinTintColor = .blue
             pin.animatesDrop = false
             return pin
         }
@@ -297,6 +316,8 @@ struct mapView: UIViewRepresentable {
             
          //   mapView.removeOverlays(mapView.overlays)
             if newState == .ending {
+              //  mapView.removeOverlays(mapView.overlays)
+    
                 parent.getDirctions(mapView)
             }
         }
@@ -307,7 +328,7 @@ struct mapView: UIViewRepresentable {
             return render
         }
         func mapViewDidChangeVisibleRegion(_ mapView: MKMapView) {
-            parent.centreCoordinate = mapView.centerCoordinate
+           // parent.centreCoordinate = mapView.centerCoordinate
         }
         func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
             
