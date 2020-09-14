@@ -12,8 +12,9 @@ import Firebase
 
 struct ContentView: View {
     @ObservedObject var session = FirebaseSession()
+    @EnvironmentObject var userInfo : UserInfo
     @State var menuOpen: Bool = false
-    @Binding var challenge: Challenge
+    @State var challenge: Challenge
  //   @State var checkpoints : [GeoPoint] = []
   //  @State var annotations : [MKPointAnnotation]
     @State private var distance = ""
@@ -27,7 +28,7 @@ struct ContentView: View {
                 
                   //  mapView(checkpoints: session.challengeForUpdate.checkpoints, theDistance: session.challengeForUpdate.distance)
                // MapTracker()
-                mapView(challenge: challenge, update: $update)
+                mapView(challenge: $challenge, update: $update)
              //   Spacer()  ?needed
                 
             //    VStack(alignment: .center) {

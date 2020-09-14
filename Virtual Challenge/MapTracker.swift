@@ -14,8 +14,9 @@ import Firebase
 
 struct MapTracker: View {
     @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var userInfo : UserInfo
     @ObservedObject var session = FirebaseSession()
-    @State var uid: String
+ //   @State var uid: String
 //    @State private var checkpoints = [GeoPoint]()
     @State private var annotations = [MKPointAnnotation]()
     @State private var centreCoordinate = CLLocationCoordinate2D()
@@ -25,7 +26,7 @@ struct MapTracker: View {
     @State private var showAlert = false
     @State private var update = false
     @State var challenge: Challenge = Challenge(id: "", user: "", title: "", checkpoints: [], annotations: [], distance: "", completed: false, active: true)
-    @State var id: String = ""
+  //  @State var id: String = ""
  //   @State var challengeForUpdate = Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: false)
     //var new : Bool = true
     
@@ -42,7 +43,7 @@ struct MapTracker: View {
                 .autocapitalization(.sentences)
          //   }
        
-            mapView( challenge: challenge, update: $update)
+            mapView( challenge: $challenge, update: $update)
                   //  .edgesIgnoringSafeArea(.top)
             
 
@@ -100,7 +101,7 @@ struct MapTracker: View {
             getCoord.append(GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude))
         }
         
-        session.uploadChallenge(id: "", user: self.uid, title: challenge.title, checkpoints: getCoord, annotations: [], distance: challenge.distance, completed: false, active: true)
+        session.uploadChallenge(id: "", user: self.userInfo.user.uid, title: challenge.title, checkpoints: getCoord, annotations: [], distance: challenge.distance, completed: false, active: true)
         self.presentationMode.wrappedValue.dismiss()
         
     }
@@ -141,7 +142,7 @@ struct makeButtonStyle: ButtonStyle {
 struct MapTracker_Previews: PreviewProvider {
     
     static var previews: some View {
-        MapTracker(uid: "", id: "")
+        MapTracker()
     }
 }
 
@@ -153,7 +154,7 @@ struct mapView: UIViewRepresentable {
     var locationManager = CLLocationManager()
  //   @Binding var distance : CLLocationDistance
  //   @Binding var id : String
-    @State var challenge: Challenge
+    @Binding var challenge: Challenge
 //    @Binding var theDistance : String
     @ObservedObject var session = FirebaseSession()
     @Binding var update : Bool
@@ -209,7 +210,7 @@ struct mapView: UIViewRepresentable {
         map.delegate = context.coordinator
       //  map.addAnnotations(challenge.annotations)
         locationManager.delegate = context.coordinator
-  
+     //   self.getDirctions(map)
         return map
     }
     
@@ -267,7 +268,7 @@ struct mapView: UIViewRepresentable {
     
     func updateUIView(_ uiView: MKMapView, context: Context) {
         
- 
+      
      
         if challenge.annotations.count != uiView.annotations.count {
             

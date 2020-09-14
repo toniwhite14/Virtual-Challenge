@@ -11,7 +11,7 @@ import SwiftUI
 struct ListView: View {
    
     @Environment(\.presentationMode) var presentationMode:Binding<PresentationMode>
-    
+    @EnvironmentObject var userInfo : UserInfo
     
     
     var body: some View {
@@ -96,15 +96,15 @@ struct ListView: View {
             } //NAVIGATION VIEW
         } //HSTACK
     } //BODYVIEW
-} //VIEW
+ //VIEW
 
 
 //TO MOVE TO MAPTRACKER
 func goMapTracker() {
-//    if let window = UIApplication.shared.windows.first {
- //       window.rootViewController = UIHostingController(rootView: MapTracker())
- //       window.makeKeyAndVisible()
- //   }
+    if let window = UIApplication.shared.windows.first {
+        window.rootViewController = UIHostingController(rootView: MapTracker().environmentObject(userInfo))
+        window.makeKeyAndVisible()
+    }
 }
 
 //TO MOVE TO CURRENT CHALLENGES
@@ -132,8 +132,9 @@ func goFriendsView() {
 //TO MOVE TO PROFILEVIEW
 func goProfileView() {
     if let window = UIApplication.shared.windows.first {
-        window.rootViewController = UIHostingController(rootView: ProfileView())
+        window.rootViewController = UIHostingController(rootView: ProfileView().environmentObject(userInfo))
     }
+}
 }
 
 struct ListView_Previews: PreviewProvider {

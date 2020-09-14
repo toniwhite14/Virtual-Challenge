@@ -42,7 +42,7 @@ struct ProfileView: View {
                 Text("Create New Challenge")
                 .buttonStyle(makeButtonStyle())
                 .sheet(isPresented: self.$showScreen) {
-                    MapTracker(uid: self.userInfo.user.uid, id: "")
+                    MapTracker().environmentObject(self.userInfo)
                 }
             }
             Spacer()
@@ -115,7 +115,7 @@ struct ChallengeRow: View {
     @ObservedObject var session = FirebaseSession()
     
     var body: some View {
-        NavigationLink(destination: ContentView(challenge: $challenge)) {
+        NavigationLink(destination: ContentView(challenge: challenge)) {
             HStack {
                 Text(challenge.title)
                 Spacer()

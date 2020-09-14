@@ -47,7 +47,7 @@ struct Challenge: Identifiable {
         var user = ""
         var title = ""
         var checkpoints : [GeoPoint] = []
-        var annotions : [MKPointAnnotation] = []
+    //    var annotions : [MKPointAnnotation] = []
         var distance = ""
         var completed = false
         var active = true
