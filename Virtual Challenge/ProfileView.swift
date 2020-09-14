@@ -9,11 +9,12 @@
 import SwiftUI
 import FirebaseAuth
 import SDWebImageSwiftUI
+import FirebaseStorage
 
 struct ProfileView: View {
     @EnvironmentObject var userInfo: UserInfo
     @ObservedObject var session = FirebaseSession()
-    @State var profilePicture: WebImage = WebImage(url: URL(string: ""))
+    @State var profileImage: WebImage = WebImage(url: URL(string: ""))
     @State var menuOpen: Bool = false
     @State var showScreen: Bool = false
     @State var challenges: [Challenge] = []
@@ -23,7 +24,7 @@ struct ProfileView: View {
         ZStack {
         
         VStack {
-            UserImage(profilePicture: $profilePicture)
+            UserImage(profilePicture: $profileImage)
                 //would like to rezize to ?300 squared
             
             Text(userInfo.user.name)
@@ -70,43 +71,50 @@ struct ProfileView: View {
                               }
                               , trailing: Text("View"))
                               Spacer()
-            }
+            
                           
                       SideMenu(width: 270,
                                    isOpen: self.menuOpen,
                                    menuClose: self.openMenu)
             }.onAppear(){
-              //  self.getChallenges(user: self.userInfo.user.uid)
+                self.image()
                 self.session.getChallenges(user: self.userInfo.user.uid)
-           
-            }
+                
+            }}
         }
     
     func openMenu() {
         self.menuOpen.toggle()
     }
     
-/*    func getChallenges(user: String)  {
-     //   var challenges: [Challenge] = []
-        
-            session.ref.whereField("user", isEqualTo: user).getDocuments { (querySnapshot, error) in
-            if let err = error {
-                       print("Error getting documents: \(err)")
-                   } else {
-                       for document in querySnapshot!.documents {
-                            let id = document.documentID
-                            print(id)
-                            let snapshot = document.data()
-                        self.challenges.append(Challenge(snapshot: snapshot, id: id)!)
-                        
-                       }
-             //   self.update()
-            }
-            
-        }
-            
-       
-    }*/
+    func image() {
+         guard let uid = Auth.auth().currentUser?.uid else {
+             return
+         }
+         let image = "\(uid)"
+         let storage = Storage.storage().reference(withPath: image)
+         storage.downloadURL{(url, err) in
+                if err != nil {
+                    print(err?.localizedDescription as Any)
+                    let noImage = "NoUserImage2.png"
+                    let storage2 = Storage.storage().reference(withPath: noImage)
+                    storage2.downloadURL{(url, err) in
+                        if err != nil {
+                            print(err?.localizedDescription as Any)
+                            return
+                        }
+                        let theurl = url
+                        self.profileImage = WebImage(url: theurl)
+                    return
+                    }}
+                else {
+                    let theurl = url
+                    self.profileImage = WebImage(url: theurl)
+                    
+                }
+         }
+     
+     }
 
 }
 
