@@ -15,8 +15,6 @@ struct ContentView: View {
     @EnvironmentObject var userInfo : UserInfo
     @State var menuOpen: Bool = false
     @State var challenge: Challenge
- //   @State var checkpoints : [GeoPoint] = []
-  //  @State var annotations : [MKPointAnnotation]
     @State private var distance = ""
     @State private var update = true
 
@@ -79,6 +77,11 @@ struct ContentView: View {
 }
 
    
-        
+        struct ContentView_Previews: PreviewProvider {
+            
+            static var previews: some View {
+                ContentView(challenge: Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true))
+            }
+        }
 
 

@@ -83,19 +83,19 @@ struct mapView: UIViewRepresentable {
         distanceFormat.units = .default
  
      //   print(self.annotations)
-        if self.challenge.annotations != [] {
-                uiView.removeOverlays(uiView.overlays)
+        if self.challenge.checkpoints != [] {
+             //   uiView.removeOverlays(uiView.overlays)
             
-            if self.challenge.annotations.count >= 1 {
+            if self.challenge.checkpoints.count >= 1 {
              //   var lines: [MKOverlay] = []
                     let req = MKDirections.Request()
                 
-                    for (k, item) in self.challenge.annotations.enumerated() {
+                    for (k, item) in self.challenge.checkpoints.enumerated() {
                     
-                        if k < (self.challenge.annotations.count-1) {
+                        if k < (self.challenge.checkpoints.count-1) {
                         
-                            req.source = MKMapItem(placemark: MKPlacemark(coordinate: item.coordinate))
-                            req.destination = MKMapItem(placemark: MKPlacemark(coordinate: self.challenge.annotations[k+1].coordinate))
+                            req.source = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: item.latitude, longitude: item.longitude)))
+                            req.destination = MKMapItem(placemark: MKPlacemark(coordinate: CLLocationCoordinate2D(latitude: self.challenge.checkpoints[k+1].latitude, longitude: self.challenge.checkpoints[k+1].longitude)))
                     
                             let directions = MKDirections(request: req)
                     
@@ -131,15 +131,21 @@ struct mapView: UIViewRepresentable {
         
       
      
-        if challenge.annotations.count != uiView.annotations.count {
+        if challenge.checkpoints.count != uiView.annotations.count {
             
             uiView.removeAnnotations(uiView.annotations)
        
-            uiView.addAnnotations(challenge.annotations)
-        
-            uiView.removeOverlays(uiView.overlays)
-            
-            getDirctions(uiView)
+            for check in challenge.checkpoints {
+                let annotation = MKPointAnnotation()
+                annotation.coordinate = CLLocationCoordinate2D(latitude: check.latitude, longitude: check.longitude)
+                uiView.addAnnotation(annotation)
+               
+                
+                
+            }
+             uiView.removeOverlays(uiView.overlays)
+        getDirctions(uiView)
+           
         }
      
     }
@@ -158,9 +164,8 @@ struct mapView: UIViewRepresentable {
                     let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
                     let annotation = MKPointAnnotation()
                     annotation.coordinate = coordinate
-               //     parent.checkpoints.append(GeoPoint(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude))
-                    parent.challenge.annotations.append(annotation)
-            //        mapView.addAnnotation(annotation)
+            
+                    parent.challenge.checkpoints.append(GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude))
                     
                 }
             }

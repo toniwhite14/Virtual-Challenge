@@ -19,9 +19,7 @@ class FirebaseSession: ObservableObject {
   
     @EnvironmentObject var userInfo : UserInfo
     @Published var challenges : [Challenge] = []
-    @Published var challengeForUpdate : Challenge = Challenge(id: "", user: "", title: "", checkpoints: [], annotations: [], distance: "", completed: false, active: false)
     @Published var title = ""
-    @Published var annotations : [MKPointAnnotation] = []
    
     var ref = Firestore
         .firestore()
@@ -47,34 +45,18 @@ class FirebaseSession: ObservableObject {
          }
     }
     
-    func getChallengeForUpdate(id: String)  {
-        ref.document(id).addSnapshotListener{ (querySnapsot, error) in
-        
-            guard let doc = querySnapsot?.data()
-                else {
-                print("Document not found")
-                return
-            }
-        
-            self.challengeForUpdate = Challenge(snapshot: doc, id: id)!
-            self.title = self.challengeForUpdate.title
-
-                
-        }
-        
-    }
     
-    func uploadChallenge(id: String, user: String, title: String, checkpoints: [GeoPoint], annotations: [MKPointAnnotation], distance: String, completed: Bool, active: Bool) {
+    func uploadChallenge(id: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, completed: Bool, active: Bool) {
    
  
-        let post = Challenge(id: id, user: user, title: title, checkpoints: checkpoints, annotations: annotations, distance: distance, completed: completed, active: active)
+        let post = Challenge(id: id, user: user, title: title, checkpoints: checkpoints, distance: distance, completed: completed, active: active)
             ref.addDocument(data: post.toAnyObject() as! [String : Any])
  
     }
     
-    func updateChallenge(id: String, user: String, title: String, checkpoints: [GeoPoint], annotations: [MKPointAnnotation], distance: String, completed: Bool, active: Bool) {
+    func updateChallenge(id: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, completed: Bool, active: Bool) {
  
-        let post = Challenge(id: id, user: user, title: title, checkpoints: checkpoints, annotations: annotations, distance: distance, completed: completed, active: active)
+        let post = Challenge(id: id, user: user, title: title, checkpoints: checkpoints, distance: distance, completed: completed, active: active)
         let docPath = ref.document(id)
         docPath.setData(post.toAnyObject() as! [String : Any])
 

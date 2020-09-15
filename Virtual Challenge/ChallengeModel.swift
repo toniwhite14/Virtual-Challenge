@@ -23,18 +23,16 @@ struct Challenge: Identifiable {
     var user: String
     var title: String
     var checkpoints: [GeoPoint]
-    var annotations: [MKPointAnnotation]
     var distance: String
     var completed: Bool
     var active: Bool
     
-    init(id: String, user: String, title: String, checkpoints: [GeoPoint], annotations: [MKPointAnnotation], distance: String, completed: Bool, active: Bool) {
+    init(id: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, completed: Bool, active: Bool) {
         self.id = id
      //   self.ref = nil
         self.user = user
         self.title = title
         self.checkpoints = checkpoints
-        self.annotations = annotations
         self.distance = distance
         self.completed = completed
         self.active = active
@@ -47,7 +45,7 @@ struct Challenge: Identifiable {
         var user = ""
         var title = ""
         var checkpoints : [GeoPoint] = []
-    //    var annotions : [MKPointAnnotation] = []
+   
         var distance = ""
         var completed = false
         var active = true
@@ -78,13 +76,7 @@ struct Challenge: Identifiable {
                 print(active)
             }
         }
-        var points : [MKPointAnnotation] = []
-        let anno = MKPointAnnotation()
-        for check in checkpoints {
-            anno.coordinate = CLLocationCoordinate2D(latitude: check.latitude, longitude: check.longitude)
-            points.append(anno)
-        }
-        self.annotations = points
+
       //  print("annotations: \(self.annotations)")
         //        else {
         //            return nil

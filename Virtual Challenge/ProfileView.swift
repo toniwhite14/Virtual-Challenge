@@ -134,7 +134,7 @@ struct ChallengeRow: View {
                 EmptyView()
                 }.onReceive([self.challenge.active].publisher.first()) { (value) in
                  //   self.challenge.active.toggle()
-                    self.session.updateChallenge(id: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, annotations: self.challenge.annotations, distance: self.challenge.distance, completed: self.challenge.completed, active: self.challenge.active)
+                    self.session.updateChallenge(id: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, distance: self.challenge.distance, completed: self.challenge.completed, active: self.challenge.active)
                 
                 }
             }

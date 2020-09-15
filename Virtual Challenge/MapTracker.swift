@@ -16,19 +16,11 @@ struct MapTracker: View {
     @Environment(\.presentationMode) var presentationMode
     @EnvironmentObject var userInfo : UserInfo
     @ObservedObject var session = FirebaseSession()
- //   @State var uid: String
-//    @State private var checkpoints = [GeoPoint]()
-   // @State private var annotations = [MKPointAnnotation]()
     @State private var centreCoordinate = CLLocationCoordinate2D()
     @State private var locationManager = CLLocationManager()
-  //  @State private var theDistance = "Tap map to plot route"
-  //  @State private var title = ""
     @State private var showAlert = false
     @State private var update = false
-    @State var challenge: Challenge = Challenge(id: "", user: "", title: "", checkpoints: [], annotations: [], distance: "", completed: false, active: true)
-  //  @State var id: String = ""
- //   @State var challengeForUpdate = Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: false)
-    //var new : Bool = true
+    @State var challenge: Challenge = Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true)
     
     var body: some View {
         ZStack {
@@ -95,31 +87,31 @@ struct MapTracker: View {
     
     func save() {
         print("saving...")
-        var getCoord: [GeoPoint] = []
+  /*      var getCoord: [GeoPoint] = []
         for anno in challenge.annotations {
             let coordinate = anno.coordinate
             getCoord.append(GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude))
-        }
+        }*/
         
-        session.uploadChallenge(id: "", user: self.userInfo.user.uid, title: challenge.title, checkpoints: getCoord, annotations: [], distance: challenge.distance, completed: false, active: true)
+        session.uploadChallenge(id: "", user: self.userInfo.user.uid, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, completed: false, active: true)
         self.presentationMode.wrappedValue.dismiss()
         
     }
     
     func removeAll() {
         self.challenge.distance = "Tap map to plot route"
-        self.challenge.annotations.removeAll()
+        self.challenge.checkpoints.removeAll()
   //      self.polylines.removeAll()
         
     }
     func removeLast() {
         
-        if self.challenge.annotations.count > 2 {
-            self.challenge.annotations.removeLast()
+        if self.challenge.checkpoints.count > 2 {
+            self.challenge.checkpoints.removeLast()
             
         }
-        else if self.challenge.annotations.count > 0 {
-            self.challenge.annotations.removeLast()
+        else if self.challenge.checkpoints.count > 0 {
+            self.challenge.checkpoints.removeLast()
             self.challenge.distance = "Tap map to plot route"
         }
         else {
