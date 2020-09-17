@@ -110,7 +110,7 @@ func goMapTracker() {
 //TO MOVE TO CURRENT CHALLENGES
 func goCurrentChallengesList() {
     if let window = UIApplication.shared.windows.first {
-        window.rootViewController = UIHostingController(rootView: CurrentChallengesList())
+        window.rootViewController = UIHostingController(rootView: CurrentChallengesList().environmentObject(userInfo))
         window.makeKeyAndVisible()
     }
 }

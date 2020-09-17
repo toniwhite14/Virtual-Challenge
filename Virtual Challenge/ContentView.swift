@@ -24,30 +24,23 @@ struct ContentView: View {
       
             VStack(alignment: .center){
                 
-                  //  mapView(checkpoints: session.challengeForUpdate.checkpoints, theDistance: session.challengeForUpdate.distance)
-               // MapTracker()
+                 
              
                 mapView(challenge: $challenge, update: $update)
-             //   Spacer()  ?needed
-                
-            //    VStack(alignment: .center) {
-                    Text("Summary")
+           
+                Text(challenge.distance)
                     HStack(alignment: .top) {
                         Text("%")
                         Text("Mileage")
                     }
                     Text("Progress Charts")
-            //        }
-            
-           //     .padding()
-          //      .offset(y: -70) //sets height for bottom VStack.
+        
 
                     .navigationBarTitle(Text(challenge.title), displayMode: .inline)
                     .navigationBarItems(leading:
-                    Button("Menu") {
-                        self.openMenu()
-                    }
-                    , trailing: Text("View"))
+                        EmptyView()
+                        , trailing: Button("Edit"){
+                    })
                     Spacer()
                     
                 }     .frame(height:500)
@@ -58,7 +51,6 @@ struct ContentView: View {
                          menuClose: self.openMenu)
         }.onAppear(){
           
-           // print("annotations: \(self.challenge.annotations)")
         }
             
         

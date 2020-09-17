@@ -192,10 +192,7 @@ struct mapView: UIViewRepresentable {
                 
                 let index = (mapView.annotations as NSArray).index(of: view.annotation!)
                 parent.challenge.checkpoints[index] = GeoPoint(latitude: (view.annotation?.coordinate.latitude)!, longitude: (view.annotation?.coordinate.longitude)!)
-             //   parent.challenge.checkpoints.removeAll()
-             //   for annotation in mapView.annotations {
-            //        parent.challenge.checkpoints.append(GeoPoint(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude))
-             //   }
+           
                 mapView.removeOverlays(mapView.overlays)
     
                 parent.getDirctions(mapView)

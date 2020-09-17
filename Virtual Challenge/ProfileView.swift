@@ -17,7 +17,6 @@ struct ProfileView: View {
     @State var profileImage: WebImage = WebImage(url: URL(string: ""))
     @State var menuOpen: Bool = false
     @State var showScreen: Bool = false
-    @State var challenges: [Challenge] = []
     
     var body: some View {
         NavigationView {
@@ -64,12 +63,14 @@ struct ProfileView: View {
                 }
             }
           
-        .navigationBarTitle(Text(userInfo.user.name), displayMode: .inline)
+        .navigationBarTitle(Text("Profile"), displayMode: .inline)
                           .navigationBarItems(leading:
                               Button("Menu") {
                                   self.openMenu()
                               }
-                              , trailing: Text("Edit"))
+                            , trailing: Button("Edit"){
+                                
+                          })
                               Spacer()
             
                           
@@ -124,7 +125,7 @@ struct ChallengeRow: View {
     
     var body: some View {
         NavigationLink(destination: ContentView(challenge: challenge)) {
-            HStack {
+      
                 Text(challenge.title)
                 Spacer()
                 Text(challenge.distance)
@@ -132,11 +133,12 @@ struct ChallengeRow: View {
                 Toggle(isOn: $challenge.active){
                 
                 EmptyView()
-                }.onReceive([self.challenge.active].publisher.first()) { (value) in
+                
+            }.onReceive([self.challenge.active].publisher.first()) { (value) in
                  //   self.challenge.active.toggle()
                     self.session.updateChallenge(id: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, distance: self.challenge.distance, completed: self.challenge.completed, active: self.challenge.active)
                 
-                }
+       //         }
             }
         }
     }
