@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct SetNewChallenge: View {
-    
+@State var menuOpen: Bool = false
     
   /*  var dateRange: ClosedRange<Date> {
         //NEED TO SET UP PROFILE
@@ -20,7 +20,9 @@ struct SetNewChallenge: View {
     */
     
     var body: some View {
-        VStack {
+        
+        ZStack{
+            VStack {
             Text("Set New Challenge")
                 .font(.largeTitle)
                 .fontWeight(.bold)
@@ -43,8 +45,20 @@ struct SetNewChallenge: View {
                 Text("Invite Friends")
             }
     }
-    }
+    }  .navigationBarTitle(Text("New Challenge"), displayMode: .inline)
+                      .navigationBarItems(leading:
+                      Button("Menu") {
+                          self.openMenu()
+                      }
+                      , trailing: Text("View"))
+       SideMenu(width: 270,
+                              isOpen: self.menuOpen,
+                              menuClose: self.openMenu)
+        }
 }
+    func openMenu() {
+        self.menuOpen.toggle()
+    }
 }
 
 struct SetNewChallenge_Previews: PreviewProvider {

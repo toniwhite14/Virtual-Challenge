@@ -66,10 +66,10 @@ struct ProfileView: View {
           
         .navigationBarTitle(Text(userInfo.user.name), displayMode: .inline)
                           .navigationBarItems(leading:
-                              Button("List") {
+                              Button("Menu") {
                                   self.openMenu()
                               }
-                              , trailing: Text("View"))
+                              , trailing: Text("Edit"))
                               Spacer()
             
                           

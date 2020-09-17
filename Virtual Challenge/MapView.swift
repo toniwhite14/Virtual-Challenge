@@ -120,7 +120,9 @@ struct mapView: UIViewRepresentable {
                     }
             
                 }
-
+                if update {
+                    uiView.showAnnotations(uiView.annotations, animated: true)
+                }
             }
         }
 
@@ -140,11 +142,9 @@ struct mapView: UIViewRepresentable {
                 annotation.coordinate = CLLocationCoordinate2D(latitude: check.latitude, longitude: check.longitude)
                 uiView.addAnnotation(annotation)
                
-                
-                
             }
-             uiView.removeOverlays(uiView.overlays)
-        getDirctions(uiView)
+            uiView.removeOverlays(uiView.overlays)
+            getDirctions(uiView)
            
         }
      
@@ -155,18 +155,19 @@ struct mapView: UIViewRepresentable {
         init(parent1 : mapView) {
             parent = parent1
         }
+        
         @objc func addPin(gesture: UIGestureRecognizer) {
-            
-            if gesture.state == .ended {
+            if parent.update == false {
+                if gesture.state == .ended {
 
-                if let mapView = gesture.view as? MKMapView {
-                    let point = gesture.location(in: mapView)
-                    let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
-                    let annotation = MKPointAnnotation()
-                    annotation.coordinate = coordinate
+                    if let mapView = gesture.view as? MKMapView {
+                        let point = gesture.location(in: mapView)
+                        let coordinate = mapView.convert(point, toCoordinateFrom: mapView)
+                        let annotation = MKPointAnnotation()
+                        annotation.coordinate = coordinate
             
-                    parent.challenge.checkpoints.append(GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude))
-                    
+                        parent.challenge.checkpoints.append(GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude))
+                }
                 }
             }
             
@@ -174,7 +175,12 @@ struct mapView: UIViewRepresentable {
       
         func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
             let pin = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "pin")
-            pin.isDraggable = true
+            if parent.update {
+                pin.isDraggable = false
+            }
+            else {
+                pin.isDraggable = true
+            }
             pin.pinTintColor = .blue
             pin.animatesDrop = false
             return pin
@@ -183,11 +189,19 @@ struct mapView: UIViewRepresentable {
             
          //   mapView.removeOverlays(mapView.overlays)
             if newState == .ending {
-              //  mapView.removeOverlays(mapView.overlays)
+                
+                let index = (mapView.annotations as NSArray).index(of: view.annotation!)
+                parent.challenge.checkpoints[index] = GeoPoint(latitude: (view.annotation?.coordinate.latitude)!, longitude: (view.annotation?.coordinate.longitude)!)
+             //   parent.challenge.checkpoints.removeAll()
+             //   for annotation in mapView.annotations {
+            //        parent.challenge.checkpoints.append(GeoPoint(latitude: annotation.coordinate.latitude, longitude: annotation.coordinate.longitude))
+             //   }
+                mapView.removeOverlays(mapView.overlays)
     
                 parent.getDirctions(mapView)
             }
         }
+       
         func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
             let render = MKPolylineRenderer(overlay: overlay)
             render.strokeColor = .purple
@@ -223,3 +237,5 @@ struct mapView: UIViewRepresentable {
         }
     }
 }
+
+
