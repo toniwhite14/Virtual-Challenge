@@ -36,15 +36,15 @@ struct ProfileView: View {
             Text("Total Mileage completed:")
             //Add Total of all challenges combined
             //?add badges for 1/3/5/10/15/20 challenges
-            Button (action: {
+        /*    Button (action: {
                 self.showScreen.toggle()
                 }){
                 Text("Create New Challenge")
                 .buttonStyle(makeButtonStyle())
                 .sheet(isPresented: self.$showScreen) {
-                    MapTracker().environmentObject(self.userInfo)
+                    MapTracker()
                 }
-            }
+            }*/
             Spacer()
             VStack{
                  HStack{

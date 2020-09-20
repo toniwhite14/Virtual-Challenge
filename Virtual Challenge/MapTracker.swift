@@ -19,24 +19,20 @@ struct MapTracker: View {
     @State private var centreCoordinate = CLLocationCoordinate2D()
     @State private var locationManager = CLLocationManager()
     @State private var showAlert = false
-    @State private var update = false
-    @State var challenge: Challenge = Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true)
+    @State var update = true
+    @State var preview = false
+    @State var annotations = [MKPointAnnotation]()
+    @Binding var challenge : Challenge
     
     var body: some View {
         ZStack {
-        Color.black
-            .edgesIgnoringSafeArea(.all)
+     //   Color.black
+       //     .edgesIgnoringSafeArea(.all)
         VStack(alignment: .center) {
-        //    if new == true {
-            TextField("Enter a title for your challenge", text: $challenge.title)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .padding()
-                .border(Color.purple)
-                .autocapitalization(.sentences)
-         //   }
        
-            mapView( challenge: $challenge, update: $update)
-                  //  .edgesIgnoringSafeArea(.top)
+       
+            mapView( challenge: $challenge, update: $update, preview: $preview, annotations: $annotations)
+                    .edgesIgnoringSafeArea(.top)
             
 
             Text(challenge.distance)
@@ -54,7 +50,7 @@ struct MapTracker: View {
                             self.showAlert = true
                             }) {
                            
-                            Text("Save Challenge")
+                            Text("Save Route")
                         }.buttonStyle(makeButtonStyle())
                         .alert(isPresented: $showAlert) {
                             Alert(title: Text("Saving Challenge"), message: Text("Have you finshed editing your challenge route?"), primaryButton: .default(Text("Save").bold(), action: self.save), secondaryButton: .cancel())
@@ -87,31 +83,32 @@ struct MapTracker: View {
     
     func save() {
         print("saving...")
-  /*      var getCoord: [GeoPoint] = []
-        for anno in challenge.annotations {
+     //   var getCoord: [GeoPoint] = []
+        challenge.checkpoints.removeAll()
+        for anno in annotations {
             let coordinate = anno.coordinate
-            getCoord.append(GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude))
-        }*/
+            challenge.checkpoints.append(GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude))
+        }
         
-        session.uploadChallenge(id: "", user: self.userInfo.user.uid, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, completed: false, active: true)
+    //    session.uploadChallenge(id: "", user: self.userInfo.user.uid, title: challenge.title, checkpoints: getCoord, distance: challenge.distance, completed: false, active: true)
         self.presentationMode.wrappedValue.dismiss()
         
     }
     
     func removeAll() {
         self.challenge.distance = "Tap map to plot route"
-        self.challenge.checkpoints.removeAll()
+        self.annotations.removeAll()
   //      self.polylines.removeAll()
         
     }
     func removeLast() {
         
-        if self.challenge.checkpoints.count > 2 {
-            self.challenge.checkpoints.removeLast()
+        if self.annotations.count > 2 {
+            self.annotations.removeLast()
             
         }
-        else if self.challenge.checkpoints.count > 0 {
-            self.challenge.checkpoints.removeLast()
+        else if self.annotations.count > 0 {
+            self.annotations.removeLast()
             self.challenge.distance = "Tap map to plot route"
         }
         else {
@@ -131,10 +128,11 @@ struct makeButtonStyle: ButtonStyle {
     }
 }
 
-struct MapTracker_Previews: PreviewProvider {
+/*struct MapTracker_Previews: PreviewProvider {
+@State var challenge = Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true)
     
     static var previews: some View {
-        MapTracker()
+        MapTracker(challenge: $challenge)
     }
-}
+}*/
 

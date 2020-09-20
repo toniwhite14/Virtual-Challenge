@@ -17,6 +17,8 @@ struct ContentView: View {
     @State var challenge: Challenge
     @State private var distance = ""
     @State private var update = true
+    @State private var preview = true
+    @State private var annotations = [MKPointAnnotation]()
 
     var body: some View {
     
@@ -26,7 +28,7 @@ struct ContentView: View {
                 
                  
              
-                mapView(challenge: $challenge, update: $update)
+                mapView(challenge: $challenge, update: $update, preview: $preview, annotations: $annotations)
            
                 Text(challenge.distance)
                     HStack(alignment: .top) {
