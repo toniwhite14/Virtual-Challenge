@@ -12,7 +12,7 @@ struct CurrentChallengesList: View {
     @EnvironmentObject var userInfo: UserInfo
     @ObservedObject var session = FirebaseSession()
     @State var menuOpen: Bool = false
-    @State var challenges: [Challenge] = []
+//    @State var challenges: [Challenge] = []
     
     var body: some View {
         NavigationView {

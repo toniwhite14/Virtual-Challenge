@@ -124,7 +124,7 @@ struct ChallengeRow: View {
     @ObservedObject var session = FirebaseSession()
     
     var body: some View {
-        NavigationLink(destination: ContentView(challenge: challenge)) {
+        NavigationLink(destination: ChallengeView(challenge: challenge)) {
       
                 Text(challenge.title)
                 Spacer()
@@ -134,14 +134,16 @@ struct ChallengeRow: View {
                 
                 EmptyView()
                 
-            }.onReceive([self.challenge.active].publisher.first()) { (value) in
+                    }.onReceive([self.challenge.active].publisher.first()) { (value) in
                  //   self.challenge.active.toggle()
-                    self.session.updateChallenge(id: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, distance: self.challenge.distance, completed: self.challenge.completed, active: self.challenge.active)
+                        
+                        self.session.updateChallenge(challenge: self.challenge)
                 
        //         }
             }
         }
     }
+    
 }
 
 struct ProfileView_Previews: PreviewProvider {

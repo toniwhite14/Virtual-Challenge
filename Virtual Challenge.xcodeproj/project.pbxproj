@@ -49,6 +49,7 @@
 		2695A5B1250AB6D0002CC306 /* ChallengeModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2695A5B0250AB6D0002CC306 /* ChallengeModel.swift */; };
 		2695A5B3250BF728002CC306 /* FirebaseSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2695A5B2250BF728002CC306 /* FirebaseSession.swift */; };
 		2695A5B525101C2D002CC306 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2695A5B425101C2C002CC306 /* MapView.swift */; };
+		2695A5B72517EC00002CC306 /* ChallengeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2695A5B62517EC00002CC306 /* ChallengeView.swift */; };
 		44D5972DAF968D4BAACC936E /* Pods_Virtual_Challenge.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2FAA5DD9E7B406DB7D59D8E5 /* Pods_Virtual_Challenge.framework */; };
 		C51E78B5AB830D845FA2A33C /* Pods_Virtual_Challenge_Virtual_ChallengeUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C1926A209A87C187E8D852F4 /* Pods_Virtual_Challenge_Virtual_ChallengeUITests.framework */; };
 		FC487FE39EECD05ED4E9A39A /* Pods_Virtual_ChallengeTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3881DC9EF7668B25E68E212B /* Pods_Virtual_ChallengeTests.framework */; };
@@ -120,6 +121,7 @@
 		2695A5B0250AB6D0002CC306 /* ChallengeModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ChallengeModel.swift; path = "Virtual Challenge/ChallengeModel.swift"; sourceTree = SOURCE_ROOT; };
 		2695A5B2250BF728002CC306 /* FirebaseSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseSession.swift; sourceTree = "<group>"; };
 		2695A5B425101C2C002CC306 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		2695A5B62517EC00002CC306 /* ChallengeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChallengeView.swift; sourceTree = "<group>"; };
 		2FAA5DD9E7B406DB7D59D8E5 /* Pods_Virtual_Challenge.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Virtual_Challenge.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3881DC9EF7668B25E68E212B /* Pods_Virtual_ChallengeTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Virtual_ChallengeTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		3B3F827F62326C4E51172CA9 /* Pods-Virtual Challenge-Virtual ChallengeUITests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Virtual Challenge-Virtual ChallengeUITests.debug.xcconfig"; path = "Target Support Files/Pods-Virtual Challenge-Virtual ChallengeUITests/Pods-Virtual Challenge-Virtual ChallengeUITests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -240,6 +242,7 @@
 				2695A5B0250AB6D0002CC306 /* ChallengeModel.swift */,
 				2695A5B2250BF728002CC306 /* FirebaseSession.swift */,
 				045B755824B2550600CCC7F3 /* ContentView.swift */,
+				2695A5B62517EC00002CC306 /* ChallengeView.swift */,
 				045B964024B638C1009BF3C2 /* SetNewChallenge.swift */,
 				045B964224B653FE009BF3C2 /* SubmitProgress.swift */,
 				045B964424B65AA9009BF3C2 /* FriendsView.swift */,
@@ -589,6 +592,7 @@
 				045AEC4D24BE7AF200A454EA /* FrontPage.swift in Sources */,
 				045B964724B65F43009BF3C2 /* FriendsViewRow.swift in Sources */,
 				045AEC5724C0A7F600A454EA /* UserViewModel.swift in Sources */,
+				2695A5B72517EC00002CC306 /* ChallengeView.swift in Sources */,
 				2695A5B1250AB6D0002CC306 /* ChallengeModel.swift in Sources */,
 				045AEC6A24C0B54600A454EA /* FBUser.swift in Sources */,
 				045AEC5124BE7CF600A454EA /* HomeView.swift in Sources */,

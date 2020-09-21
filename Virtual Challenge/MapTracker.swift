@@ -19,7 +19,7 @@ struct MapTracker: View {
     @State private var centreCoordinate = CLLocationCoordinate2D()
     @State private var locationManager = CLLocationManager()
     @State private var showAlert = false
-    @State var update = true
+    @State var update : Bool
     @State var preview = false
     @State var annotations = [MKPointAnnotation]()
     @Binding var challenge : Challenge
@@ -83,13 +83,22 @@ struct MapTracker: View {
     
     func save() {
         print("saving...")
-     //   var getCoord: [GeoPoint] = []
-        challenge.checkpoints.removeAll()
+        
+        var getCoord: [GeoPoint] = []
+        
+      //  challenge.checkpoints.removeAll()
         for anno in annotations {
             let coordinate = anno.coordinate
-            challenge.checkpoints.append(GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude))
+            getCoord.append(GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude))
         }
-        
+        challenge.checkpoints = getCoord
+        if update {
+            print("updating")
+            
+            session.updateChallenge(challenge: challenge)
+            
+        }
+    //    session.getChallenges(user: userInfo.user.uid)
     //    session.uploadChallenge(id: "", user: self.userInfo.user.uid, title: challenge.title, checkpoints: getCoord, distance: challenge.distance, completed: false, active: true)
         self.presentationMode.wrappedValue.dismiss()
         

@@ -36,7 +36,7 @@ class FirebaseSession: ObservableObject {
              //   let data = queryDocumentSnapshot.data()
                
                                 let id = queryDocumentSnapshot.documentID
-                                print(id)
+                        
                                 let snapshot = queryDocumentSnapshot.data()
               //  self.challenges.append(Challenge(snapshot: snapshot, id: id)!)
                             return Challenge(snapshot: snapshot, id: id)!
@@ -54,11 +54,15 @@ class FirebaseSession: ObservableObject {
  
     }
     
-    func updateChallenge(id: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, completed: Bool, active: Bool) {
- 
-        let post = Challenge(id: id, user: user, title: title, checkpoints: checkpoints, distance: distance, completed: completed, active: active)
-        let docPath = ref.document(id)
-        docPath.setData(post.toAnyObject() as! [String : Any])
+    func updateChallenge(challenge: Challenge) {
+     
+        let ref2 = Firestore.firestore().collection(FBKeys.CollectionPath.challenges).document(challenge.id)
+        let post = challenge
+       
+        ref2.updateData(post.toAnyObject()as! [String : Any])
+     //   let docPath = ref.document(id)
+     //   docPath.setData(post.toAnyObject() as! [String : Any])
+        
 
     }
  

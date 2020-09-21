@@ -21,11 +21,13 @@ struct mapView: UIViewRepresentable {
     @Binding var update : Bool
     @Binding var preview : Bool
     @Binding var annotations : [MKPointAnnotation]
+    @State private var setup = true
     func setupManager() {
         
      //    locationManager.desiredAccuracy = kCLLocationAccuracyBest
          locationManager.requestWhenInUseAuthorization()
          locationManager.requestAlwaysAuthorization()
+     
       //  self.session.getChallengeForUpdate(id: id)
      //   if update{
      //            self.annotations = self.session.challengeForUpdate.annotations
@@ -152,12 +154,18 @@ struct mapView: UIViewRepresentable {
                 }
                     
             }
-
+            if setup {
+                setup = false
+                if challenge.checkpoints != [] {
+                    uiView.showAnnotations(uiView.annotations, animated: true)
+                    
+                }
+            }
         }
 
     }
     func updateUIView(_ uiView: MKMapView, context: Context) {
-        if update {
+  /*      if update {
             DispatchQueue.main.async {
                 
                 if self.challenge.checkpoints.count != uiView.annotations.count {
@@ -172,29 +180,37 @@ struct mapView: UIViewRepresentable {
                     self.getDirctions(uiView)
             }
         }
-        }
-        if preview {
-            if challenge.checkpoints.count != uiView.annotations.count {
+        }*/
+        DispatchQueue.main.async {
+        
+            if self.setup {
+                if self.challenge.checkpoints.count != uiView.annotations.count {
                 uiView.removeAnnotations(uiView.annotations)
-                for check in challenge.checkpoints {
+                    for check in self.challenge.checkpoints {
                     let annotation = MKPointAnnotation()
                     annotation.coordinate = CLLocationCoordinate2D(latitude: check.latitude, longitude: check.longitude)
+                    self.annotations.append(annotation)
                     uiView.addAnnotation(annotation)
             }
+                   
+                //    self.setup = false
+                
                 uiView.removeOverlays(uiView.overlays)
-                       getDirctions(uiView)
+                    self.getDirctions(uiView)
         }
     }
-        else if annotations.count != uiView.annotations.count {
+            if self.preview == false {
+                if self.annotations.count != uiView.annotations.count {
              
-            uiView.removeAnnotations(uiView.annotations)
-            for annotation in annotations {
-                uiView.addAnnotation(annotation)
+                    uiView.removeAnnotations(uiView.annotations)
+                    for annotation in self.annotations {
+                        uiView.addAnnotation(annotation)
+                    }
+                    uiView.removeOverlays(uiView.overlays)
+                    self.getDirctions(uiView)
+                }
             }
-             uiView.removeOverlays(uiView.overlays)
-            getDirctions(uiView)
         }
-       
      
     }
     

@@ -1,49 +1,41 @@
 //
-//  SetNewChallenge.swift
+//  ChallengeView.swift
 //  Virtual Challenge
 //
-//  Created by Mac on 08/07/2020.
+//  Created by Nicola Grayson on 20/09/2020.
 //  Copyright © 2020 Toni. All rights reserved.
 //
+
 
 import SwiftUI
 import MapKit
 
-struct SetNewChallenge: View {
+struct ChallengeView: View {
 @EnvironmentObject var userInfo : UserInfo
 @ObservedObject var session = FirebaseSession()
 @State var menuOpen: Bool = false
 @State private var showScreen: Bool = false
-@State var challenge: Challenge = Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true)
+@State var challenge: Challenge 
 @State private var update: Bool = false
 @State private var preview: Bool = true
 @State var annotations = [MKPointAnnotation]()
-  /*  var dateRange: ClosedRange<Date> {
-        //NEED TO SET UP PROFILE
-           let min = Calendar.current.date(byAdding: .year, value: -1, to: profile.goalDate)!
-           let max = Calendar.current.date(byAdding: .year, value: 1, to: profile.goalDate)!
-           return min...max
-       }
-    */
+
     
     var body: some View {
-        NavigationView {
+    //    NavigationView {
             ZStack{
                 VStack {
-                    TextField("Enter a title for your challenge", text: $challenge.title)
-                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                    .padding()
-                        .border(challenge.title.isEmpty ? Color.red : Color.green, width: 3)
-                
-                        .autocapitalization(.sentences)
+                //    Text(challenge.title)
+                //    .bold()
+                //    .padding()
                     mapView( challenge: $challenge, update: $update, preview: $preview, annotations: $annotations)
                     Button (action: {
                                    self.showScreen.toggle()
                                    }){
-                                   Text("Plot Route")
+                                   Text("Edit Route")
                                    .buttonStyle(makeButtonStyle())
                                    .sheet(isPresented: self.$showScreen) {
-                                    MapTracker(update: false, preview: false, challenge: self.$challenge ).environmentObject(self.userInfo)
+                                    MapTracker(update: true, preview: false, challenge: self.$challenge ).environmentObject(self.userInfo)
                                     }}
                     Text("Insert Challenge Picture")
                 .frame(height:200)
@@ -60,25 +52,27 @@ struct SetNewChallenge: View {
         */    Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
                 Text("Invite Friends")
             }
-                Button(action: {self.save()}) {
-                    Text("Save Challenge")
-                }.buttonStyle(makeButtonStyle())
+       //         Button(action: {self.save()}) {
+       //             Text("Save Challenge")
+       //         }.buttonStyle(makeButtonStyle())
                     }
-    }  .navigationBarTitle(Text("New Challenge"), displayMode: .inline)
+                }  .navigationBarTitle(Text(challenge.title), displayMode: .inline)
                       .navigationBarItems(leading:
                       Button("Menu") {
                           self.openMenu()
                       }
-                        , trailing: Button("Edit"){})
+                        , trailing: Button("Edit"){self.edit()})
        SideMenu(width: 270,
                               isOpen: self.menuOpen,
                               menuClose: self.openMenu)
-        }
+            }.onAppear() {
+                
+     //       }
     }
 }
-    func save() {
-        session.uploadChallenge(id: "", user: self.userInfo.user.uid, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, completed: false, active: true)
-        print("saving")
+    func edit() {
+ 
+        
     }
     
     func openMenu() {
@@ -87,8 +81,8 @@ struct SetNewChallenge: View {
     
 }
 
-struct SetNewChallenge_Previews: PreviewProvider {
+struct ChallengeView_Previews: PreviewProvider {
     static var previews: some View {
-        SetNewChallenge()
+        ChallengeView(challenge: Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true))
     }
 }

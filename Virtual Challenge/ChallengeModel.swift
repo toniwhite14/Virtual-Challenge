@@ -53,27 +53,27 @@ struct Challenge: Identifiable {
         for s in snapshot {
             if s.key == "user" {
                 user = s.value as! String
-                print(user)
+             
             }
             if s.key == "title" {
                 title = s.value as! String
-                print(title)
+               
             }
             if s.key == "checkpoints" {
                 checkpoints = s.value as! [GeoPoint]
-                print(checkpoints)
+                
             }
             if s.key == "distance" {
                 distance = s.value as! String
-                print(distance)
+                
             }
             if s.key == "completed" {
                 completed = s.value as! Bool
-                print(completed)
+                
             }
             if s.key == "active" {
                 active = s.value as! Bool
-                print(active)
+               
             }
         }
 
