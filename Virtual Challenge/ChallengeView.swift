@@ -29,7 +29,8 @@ struct ChallengeView: View {
                 //    .bold()
                 //    .padding()
                     mapView( challenge: $challenge, update: $update, preview: $preview, annotations: $annotations)
-                    Button (action: {
+                    HStack{
+                        Button (action: {
                                    self.showScreen.toggle()
                                    }){
                                    Text("Edit Route")
@@ -37,6 +38,13 @@ struct ChallengeView: View {
                                    .sheet(isPresented: self.$showScreen) {
                                     MapTracker(update: true, preview: false, challenge: self.$challenge ).environmentObject(self.userInfo)
                                     }}
+                   
+                        Spacer()
+                        
+                        Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
+                                        Text("Invite Friends")
+                        }
+                    }.padding()
                     Text("Insert Challenge Picture")
                 .frame(height:200)
             Text("To be completed by:")
@@ -49,22 +57,19 @@ struct ChallengeView: View {
                     in: dateRange,
                     displayedComponents: .date)
             }
-        */    Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-                Text("Invite Friends")
-            }
+        */
        //         Button(action: {self.save()}) {
        //             Text("Save Challenge")
        //         }.buttonStyle(makeButtonStyle())
                     }
                 }  .navigationBarTitle(Text(challenge.title), displayMode: .inline)
                       .navigationBarItems(leading:
-                      Button("Menu") {
-                          self.openMenu()
+                      Button("") {
                       }
                         , trailing: Button("Edit"){self.edit()})
-       SideMenu(width: 270,
-                              isOpen: self.menuOpen,
-                              menuClose: self.openMenu)
+   //    SideMenu(width: 270,
+    //                          isOpen: self.menuOpen,
+   //                           menuClose: self.openMenu)
             }.onAppear() {
                 
      //       }
@@ -72,6 +77,10 @@ struct ChallengeView: View {
 }
     func edit() {
  
+        if let window = UIApplication.shared.windows.first {
+            window.rootViewController = UIHostingController(rootView: SetNewChallenge(challenge: challenge, update: true).environmentObject(userInfo))
+             window.makeKeyAndVisible()
+         }
         
     }
     

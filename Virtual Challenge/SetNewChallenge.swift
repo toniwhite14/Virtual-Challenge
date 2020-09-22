@@ -15,7 +15,7 @@ struct SetNewChallenge: View {
 @State var menuOpen: Bool = false
 @State private var showScreen: Bool = false
 @State var challenge: Challenge = Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true)
-@State private var update: Bool = false
+@State var update: Bool = false
 @State private var preview: Bool = true
 @State var annotations = [MKPointAnnotation]()
   /*  var dateRange: ClosedRange<Date> {
@@ -37,7 +37,8 @@ struct SetNewChallenge: View {
                 
                         .autocapitalization(.sentences)
                     mapView( challenge: $challenge, update: $update, preview: $preview, annotations: $annotations)
-                    Button (action: {
+                    HStack{
+                        Button (action: {
                                    self.showScreen.toggle()
                                    }){
                                    Text("Plot Route")
@@ -45,6 +46,13 @@ struct SetNewChallenge: View {
                                    .sheet(isPresented: self.$showScreen) {
                                     MapTracker(update: false, preview: false, challenge: self.$challenge ).environmentObject(self.userInfo)
                                     }}
+                        
+                        Spacer()
+                        
+                    Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
+                        Text("Invite Friends")
+                    }
+                    }.padding()
                     Text("Insert Challenge Picture")
                 .frame(height:200)
             Text("To be completed by:")
@@ -57,13 +65,13 @@ struct SetNewChallenge: View {
                     in: dateRange,
                     displayedComponents: .date)
             }
-        */    Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-                Text("Invite Friends")
-            }
+        */
                 Button(action: {self.save()}) {
                     Text("Save Challenge")
                 }.buttonStyle(makeButtonStyle())
                     }
+                    Spacer()
+                    
     }  .navigationBarTitle(Text("New Challenge"), displayMode: .inline)
                       .navigationBarItems(leading:
                       Button("Menu") {
@@ -77,8 +85,16 @@ struct SetNewChallenge: View {
     }
 }
     func save() {
+        if update {
+            session.updateChallenge(challenge: challenge.id, user: challenge.user, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, active: challenge.active, completed: challenge.completed)
+        }
+        else {
         session.uploadChallenge(id: "", user: self.userInfo.user.uid, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, completed: false, active: true)
-        print("saving")
+        }
+        if let window = UIApplication.shared.windows.first {
+             window.rootViewController = UIHostingController(rootView: CurrentChallengesList().environmentObject(userInfo))
+             window.makeKeyAndVisible()
+         }
     }
     
     func openMenu() {
