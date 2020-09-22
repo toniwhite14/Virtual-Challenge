@@ -86,16 +86,18 @@ struct MapTracker: View {
         
         var getCoord: [GeoPoint] = []
         
-      //  challenge.checkpoints.removeAll()
+        challenge.checkpoints.removeAll()
         for anno in annotations {
             let coordinate = anno.coordinate
             getCoord.append(GeoPoint(latitude: coordinate.latitude, longitude: coordinate.longitude))
         }
         challenge.checkpoints = getCoord
+        
         if update {
             print("updating")
-            
-            session.updateChallenge(challenge: challenge)
+            print(challenge.checkpoints)
+
+            session.updateChallenge(challenge: challenge.id, user: challenge.user, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, active: challenge.active, completed: challenge.completed)
             
         }
     //    session.getChallenges(user: userInfo.user.uid)

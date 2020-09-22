@@ -165,22 +165,7 @@ struct mapView: UIViewRepresentable {
 
     }
     func updateUIView(_ uiView: MKMapView, context: Context) {
-  /*      if update {
-            DispatchQueue.main.async {
-                
-                if self.challenge.checkpoints.count != uiView.annotations.count {
-                  //  uiView.removeAnnotations(uiView.annotations)
-                    for check in self.challenge.checkpoints {
-                        let annotation = MKPointAnnotation()
-                        annotation.coordinate = CLLocationCoordinate2D(latitude: check.latitude, longitude: check.longitude)
-                        self.annotations.append(annotation)
-                        uiView.addAnnotation(annotation)
-                    }
-                    self.update = false
-                    self.getDirctions(uiView)
-            }
-        }
-        }*/
+ 
         DispatchQueue.main.async {
         
             if self.setup {

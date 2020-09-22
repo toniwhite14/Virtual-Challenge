@@ -134,17 +134,20 @@ struct ChallengeRow: View {
                 
                 EmptyView()
                 
-                    }.onReceive([self.challenge.active].publisher.first()) { (value) in
-                 //   self.challenge.active.toggle()
+                }.onTapGesture {
+                    
+                //.onReceive([self.challenge.active].publisher.first()) { (value) in
+                    self.challenge.active.toggle()
                         
-                        self.session.updateChallenge(challenge: self.challenge)
-                
+                        self.session.updateChallenge(challenge: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, distance: self.challenge.distance, active: self.challenge.active, completed: self.challenge.completed)
+            
        //         }
             }
         }
     }
     
 }
+
 
 struct ProfileView_Previews: PreviewProvider {
     static var previews: some View {

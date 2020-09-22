@@ -54,14 +54,26 @@ class FirebaseSession: ObservableObject {
  
     }
     
-    func updateChallenge(challenge: Challenge) {
-     
-        let ref2 = Firestore.firestore().collection(FBKeys.CollectionPath.challenges).document(challenge.id)
-        let post = challenge
-       
-        ref2.updateData(post.toAnyObject()as! [String : Any])
-     //   let docPath = ref.document(id)
-     //   docPath.setData(post.toAnyObject() as! [String : Any])
+    func updateChallenge(challenge: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, active: Bool, completed: Bool) {
+     print("updating")
+     //   let ref2 = Firestore.firestore().collection(FBKeys.CollectionPath.challenges).document(challenge.id)
+        let post = Challenge(id: challenge, user: user, title: title, checkpoints: checkpoints, distance: distance, completed: completed, active: active).toAnyObject()
+   /*     let title = ["title": title] as [String: Any]
+        let checkpoints = ["checkpoints": checkpoints] as [String: Any]
+        let distance = ["distance": distance] as [String: Any]
+        let active = ["active": active] as [String: Any]
+        let completed = ["completed": completed] as [String: Any]
+       print(checkpoints)
+     //   ref2.setData(post.toAnyObject()as! [String : Any], merge: false)
+        
+        let docPath = ref.document(challenge)
+        
+        docPath.updateData(title)
+        docPath.updateData(checkpoints)
+        docPath.updateData(distance)
+        docPath.updateData(active)
+        docPath.updateData(completed)*/
+        ref.document(challenge).updateData(post as! [String: Any])
         
 
     }
