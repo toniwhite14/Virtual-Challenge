@@ -46,7 +46,7 @@ struct HomeView: View {
                     Text("Logged in as \(userInfo.user.name)")
                     Spacer()
            
-                    .navigationBarTitle("Virtual Challenge")
+                        .navigationBarTitle("Virtual Challenge", displayMode: .inline)
                     .navigationBarItems(leading: Button("List") {
                     self.openMenu()
                 }

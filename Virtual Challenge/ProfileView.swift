@@ -29,9 +29,7 @@ struct ProfileView: View {
             Text(userInfo.user.name)
                 .font(.title)
                 .fontWeight(.heavy)
-            Text("Challenges currently completing:")
-            //Add list
-            Text("Chalenges completed:")
+            
             //Add list
             Text("Total Mileage completed:")
             //Add Total of all challenges combined
@@ -48,16 +46,31 @@ struct ProfileView: View {
             Spacer()
             VStack{
                  HStack{
-                     Text("Title")
-                     Spacer()
-                     Text("Distance")
-                     Spacer()
-                     Text("Active")
+                    Spacer()
+                    Text("Active Challenges:").bold()
+                    Spacer()
+                    
                     }.padding()
                     .background(Color(.black))
                     .foregroundColor(.white)
-                List(session.challenges, id: \.id) { challenge in
+               
+                List(getActiveChallanges(), id: \.id) { challenge in
                     
+                        ChallengeRow(challenge: challenge)
+                    }
+                HStack{
+                    Spacer()
+                    Text("Completed Challanges")
+                    Spacer()
+               /*  Text("Title")
+                 Spacer()
+                 Text("Distance")
+                 Spacer()
+                 Text("Active")*/
+                }.padding()
+                .background(Color(.black))
+                .foregroundColor(.white)
+                List(getCompletedChallenges(), id: \.id) { challenge in
                         ChallengeRow(challenge: challenge)
                     }
                 }
@@ -80,9 +93,10 @@ struct ProfileView: View {
             }.onAppear(){
                 self.image()
                 self.session.getChallenges(user: self.userInfo.user.uid)
-                
+            //    self.getActiveChallanges()
             }}
         }
+
     
     func openMenu() {
         self.menuOpen.toggle()
@@ -116,7 +130,25 @@ struct ProfileView: View {
          }
      
      }
-
+    func getActiveChallanges() -> [Challenge]{
+        var array : [Challenge] = []
+        for challenge in session.challenges {
+            if challenge.active {
+                array.append(challenge)
+            }
+        }
+        return array
+        
+    }
+    func getCompletedChallenges() -> [Challenge]{
+        var array : [Challenge] = []
+        for challenge in session.challenges {
+            if challenge.completed{
+                array.append(challenge)
+            }
+        }
+        return array
+    }
 }
 
 struct ChallengeRow: View {

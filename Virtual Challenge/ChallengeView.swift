@@ -45,6 +45,12 @@ struct ChallengeView: View {
                                         Text("Invite Friends")
                         }
                     }.padding()
+                    Toggle("Active", isOn: $challenge.active).onTapGesture {
+                         self.challenge.active.toggle()
+                                               
+                            self.session.updateChallenge(challenge: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, distance: self.challenge.distance, active: self.challenge.active, completed: self.challenge.completed)
+                    }.padding()
+                
                     Text("Insert Challenge Picture")
                 .frame(height:200)
             Text("To be completed by:")

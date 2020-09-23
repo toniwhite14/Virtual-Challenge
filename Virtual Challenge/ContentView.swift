@@ -36,7 +36,7 @@ struct ContentView: View {
                         Text("Mileage")
                     }
                     Text("Progress Charts")
-        
+                    
 
                     .navigationBarTitle(Text(challenge.title), displayMode: .inline)
                     .navigationBarItems(leading:
