@@ -23,10 +23,10 @@ struct CurrentChallengesList: View {
                         Spacer()
                         Text("Distance").bold()
                         Spacer()
-                        Text("Active").bold()
+                        Text("Progress").bold()
                     }.padding()
                     VStack{
-                    List(session.challenges, id: \.id) { challenge in
+                    List(getIncompletChallenges(), id: \.id) { challenge in
             
                         ChallengeRow(challenge: challenge)
                         }}}
@@ -47,6 +47,16 @@ struct CurrentChallengesList: View {
         }
         
     }
+    
+        func getIncompletChallenges() -> [Challenge]{
+            var array : [Challenge] = []
+            for challenge in session.challenges {
+                if challenge.completed == false{
+                    array.append(challenge)
+                }
+            }
+            return array
+        }
     
     func openMenu() {
         self.menuOpen.toggle()

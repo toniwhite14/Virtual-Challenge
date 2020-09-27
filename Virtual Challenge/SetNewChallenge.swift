@@ -14,7 +14,7 @@ struct SetNewChallenge: View {
 @ObservedObject var session = FirebaseSession()
 @State var menuOpen: Bool = false
 @State private var showScreen: Bool = false
-@State var challenge: Challenge = Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true)
+    @State var challenge: Challenge = Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true, progress: 0.0)
 @State var update: Bool = false
 @State private var preview: Bool = true
 @State var annotations = [MKPointAnnotation]()
@@ -72,7 +72,7 @@ struct SetNewChallenge: View {
                     }
                     Spacer()
                     
-    }  .navigationBarTitle(Text("New Challenge"), displayMode: .inline)
+    }  .navigationBarTitle(Text(getTitle()), displayMode: .inline)
                       .navigationBarItems(leading:
                       Button("Menu") {
                           self.openMenu()
@@ -84,12 +84,20 @@ struct SetNewChallenge: View {
         }
     }
 }
-    func save() {
+    func getTitle() -> String {
         if update {
-            session.updateChallenge(challenge: challenge.id, user: challenge.user, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, active: challenge.active, completed: challenge.completed)
+            return "Edit Challenge"
         }
         else {
-        session.uploadChallenge(id: "", user: self.userInfo.user.uid, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, completed: false, active: true)
+            return "New CHallenge"
+        }
+    }
+    func save() {
+        if update {
+            session.updateChallenge(challenge: challenge.id, user: challenge.user, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, active: challenge.active, completed: challenge.completed, progress: challenge.progress)
+        }
+        else {
+            session.uploadChallenge(id: "", user: self.userInfo.user.uid, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, completed: false, active: true, progress: challenge.progress)
         }
         if let window = UIApplication.shared.windows.first {
              window.rootViewController = UIHostingController(rootView: CurrentChallengesList().environmentObject(userInfo))

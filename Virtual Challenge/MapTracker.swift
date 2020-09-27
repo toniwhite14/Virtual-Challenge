@@ -97,7 +97,7 @@ struct MapTracker: View {
             print("updating")
             print(challenge.checkpoints)
 
-            session.updateChallenge(challenge: challenge.id, user: challenge.user, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, active: challenge.active, completed: challenge.completed)
+            session.updateChallenge(challenge: challenge.id, user: challenge.user, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, active: challenge.active, completed: challenge.completed, progress: challenge.progress)
             
         }
     //    session.getChallenges(user: userInfo.user.uid)

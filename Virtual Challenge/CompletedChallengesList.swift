@@ -9,23 +9,57 @@
 import SwiftUI
 
 struct CompletedChallengesList: View {
+    @EnvironmentObject var userInfo: UserInfo
+    @ObservedObject var session = FirebaseSession()
+    @State var menuOpen: Bool = false
+    
     var body: some View {
         NavigationView {
-        List {
-            HStack{
-            Text("Challenge.image")
-           // .resizable()
-                .frame(width: 50, height: 50)
-                VStack {
-                    Text("challenge.name")
-                    
+        ZStack{
+            VStack{
+                HStack{
+                    Text("Title").bold()
+                    Spacer()
+                    Text("Distance").bold()
+                    Spacer()
+                    Text("Active").bold()
+                }.padding()
+                VStack{
+                    List(getCompletedChallenges(), id: \.id) { challenge in
                    
-            Spacer()
+                        ChallengeRow(challenge: challenge)
+                        }
+                    
+                    }
+                
+                }
+        
+        .navigationBarTitle(Text("Current Challenges"), displayMode: .inline)
+        .navigationBarItems(leading: Button("Menu") { self.openMenu()}
+                   , trailing: Button("Add"){})
+                    //Spacer()
+                       SideMenu(width: 270,
+                                isOpen: self.menuOpen,
+                                menuClose: self.openMenu)
+                                 
+                           }.onAppear(){
+                   self.session.getChallenges(user: self.userInfo.user.uid)
+                   }
                 }
         }
-        .navigationBarTitle(Text("Completed Challenges"))
+               
+    func getCompletedChallenges() -> [Challenge]{
+        var array : [Challenge] = []
+        for challenge in session.challenges {
+            if challenge.completed {
+                array.append(challenge)
+            }
         }
-        }
+        return array
+    }
+    
+    func openMenu() {
+        self.menuOpen.toggle()
     }
 }
 

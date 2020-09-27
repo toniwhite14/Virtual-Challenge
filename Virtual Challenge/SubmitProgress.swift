@@ -7,16 +7,21 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct SubmitProgress: View {
-    
+    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject var userInfo : UserInfo
+    @State var input: String = ""
+    @ObservedObject var session = FirebaseSession()
+    @Binding var challenge: Challenge
     //var constant = "text"
     
     var body: some View {
         VStack {
         Text("Input New Distance:")
             HStack {
-                TextField("Input Distance", text: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Value@*/.constant("")/*@END_MENU_TOKEN@*/)
+                TextField("Input Distance", text: $input)
             .frame(height:50)
                 Text("unit")
             }
@@ -33,16 +38,28 @@ struct SubmitProgress: View {
                 Text("Row (outdoors)").tag(8)
                 
             }
-            Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
+            Button(action: self.save) {
                 Text("Submit")
             }
 
         }
     }
-}
-
-struct SubmitProgress_Previews: PreviewProvider {
-    static var previews: some View {
-        SubmitProgress()
+    func save() {
+        var total: Double = 0.0
+        let formatter = MKDistanceFormatter()
+                  formatter.units = .metric
+        let input = formatter.distance(from: self.input)
+        let milage = CLLocationDistance(self.challenge.progress)
+        total = Double(Float(milage)+Float(input))
+        self.challenge.progress = total
+        session.updateChallenge(challenge: challenge.id, user: challenge.user, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, active: challenge.active, completed: challenge.completed, progress: total)
+        print(total)
+self.presentationMode.wrappedValue.dismiss()
     }
 }
+
+/*struct SubmitProgress_Previews: PreviewProvider {
+    static var previews: some View {
+        SubmitProgress(challenge: Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true, progress: 0.0))
+    }
+}*/

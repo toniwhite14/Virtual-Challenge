@@ -118,7 +118,7 @@ func goCurrentChallengesList() {
 //TO MOVE TO COMPLETED CHALLENGES
     func goCompletedChallengesList() {
         if let window = UIApplication.shared.windows.first {
-            window.rootViewController = UIHostingController(rootView: CompletedChallengesList())
+            window.rootViewController = UIHostingController(rootView: CompletedChallengesList().environmentObject(userInfo))
         }
     }
 

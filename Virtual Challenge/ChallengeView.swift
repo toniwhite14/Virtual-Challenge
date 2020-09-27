@@ -15,11 +15,12 @@ struct ChallengeView: View {
 @ObservedObject var session = FirebaseSession()
 @State var menuOpen: Bool = false
 @State private var showScreen: Bool = false
-@State var challenge: Challenge 
+@Binding var challenge: Challenge
 @State private var update: Bool = false
 @State private var preview: Bool = true
 @State var annotations = [MKPointAnnotation]()
-
+@State var progressValue: Float = 0.0
+@State var milage: CLLocationDistance = 0.0
     
     var body: some View {
     //    NavigationView {
@@ -30,44 +31,29 @@ struct ChallengeView: View {
                 //    .padding()
                     mapView( challenge: $challenge, update: $update, preview: $preview, annotations: $annotations)
                     HStack{
-                        Button (action: {
-                                   self.showScreen.toggle()
-                                   }){
-                                   Text("Edit Route")
-                                   .buttonStyle(makeButtonStyle())
-                                   .sheet(isPresented: self.$showScreen) {
-                                    MapTracker(update: true, preview: false, challenge: self.$challenge ).environmentObject(self.userInfo)
-                                    }}
-                   
-                        Spacer()
-                        
-                        Button(action: /*@START_MENU_TOKEN@*/{}/*@END_MENU_TOKEN@*/) {
-                                        Text("Invite Friends")
-                        }
+              
+                        NavigationLink(destination:
+SubmitProgress(challenge: $challenge)){
+                            Text("Add Progress")
+                            Image(systemName: "plus")
+}
                     }.padding()
-                    Toggle("Active", isOn: $challenge.active).onTapGesture {
-                         self.challenge.active.toggle()
-                                               
-                            self.session.updateChallenge(challenge: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, distance: self.challenge.distance, active: self.challenge.active, completed: self.challenge.completed)
-                    }.padding()
+
                 
-                    Text("Insert Challenge Picture")
-                .frame(height:200)
-            Text("To be completed by:")
-            
-            VStack(alignment: .leading, spacing: 20) {
-                Text("Goal Date").bold()
-      /*          DatePicker(
-                    "Goal Date",
-                    selection: $profile.goalDate,
-                    in: dateRange,
-                    displayedComponents: .date)
-            }
-        */
-       //         Button(action: {self.save()}) {
-       //             Text("Save Challenge")
-       //         }.buttonStyle(makeButtonStyle())
+            Text("Deadline:")
+            Text("Goal Date").bold()
+                    
+                    HStack{
+                        ProgressBar(challenge: $challenge)
+                    .frame(width: 80.0, height: 80.0)
+                    .padding(40.0)
+                MilageBar(challenge: $challenge)
+                    .frame(width: 80.0, height: 80.0)
+                    .padding(40.0)
                     }
+                Spacer()
+            
+                    
                 }  .navigationBarTitle(Text(challenge.title), displayMode: .inline)
                       .navigationBarItems(leading:
                       Button("") {
@@ -78,7 +64,6 @@ struct ChallengeView: View {
    //                           menuClose: self.openMenu)
             }.onAppear() {
                 
-     //       }
     }
 }
     func edit() {
@@ -96,8 +81,75 @@ struct ChallengeView: View {
     
 }
 
-struct ChallengeView_Previews: PreviewProvider {
+/*struct ChallengeView_Previews: PreviewProvider {
     static var previews: some View {
-        ChallengeView(challenge: Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true))
+        ChallengeView(challenge: Challenge(id: "", user: "", title: "", checkpoints: [], distance: "", completed: false, active: true, progress: 0.0))
+    }
+}*/
+
+struct ProgressBar: View {
+    @State var progress: Float = 0.0
+    @Binding var challenge: Challenge
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(lineWidth: 5.0)
+                .opacity(0.3)
+                .foregroundColor(Color.green)
+            
+            Circle()
+                .trim(from: 0.0, to: CGFloat(min(self.progress, 1.0)))
+                .stroke(style: StrokeStyle(lineWidth: 5.0, lineCap: .round, lineJoin: .round))
+                .foregroundColor(Color.green)
+                .rotationEffect(Angle(degrees: 270.0))
+                .animation(.linear)
+            Text(String(format: "%.0f %%", min(self.progress, 1.0)*100.0))
+            .font(.callout)
+            .bold()
+        }.onAppear() {
+            var distance : CLLocationDistance = 0
+            let formatter = MKDistanceFormatter()
+            formatter.units = .metric
+            if self.challenge.distance != "" {
+                let string = self.challenge.distance.components(separatedBy: ",").joined()
+                print(string)
+                
+                distance = formatter.distance(from: string)
+                print(distance)
+            }
+            let milage = CLLocationDistance(self.challenge.progress)
+         //   let remaining = milage.distance(to: distance)
+            self.progress = Float(milage)/(Float(distance))
+        }
+        
+    }
+}
+struct MilageBar: View {
+    @Binding var challenge: Challenge
+    @State var milage = ""
+    let formatter = MKDistanceFormatter()
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(lineWidth: 5.0)
+            //    .opacity(0.3)
+                .foregroundColor(Color.yellow)
+            
+            /*Circle()
+                .trim(from: 0.0, to: CGFloat(self.milage))
+                .stroke(style: StrokeStyle(lineWidth: 10.0, lineCap: .round, lineJoin: .round))
+                .foregroundColor(Color.yellow)
+                .rotationEffect(Angle(degrees: 270.0))
+                .animation(.linear)*/
+            Text(milage)
+                .font(.callout)
+            .bold()
+        }.onAppear(){
+            self.formatter.units = .metric
+            self.formatter.unitStyle = .abbreviated
+            self.milage = self.formatter.string(fromDistance: CLLocationDistance(self.challenge.progress))
+        }
+        
     }
 }

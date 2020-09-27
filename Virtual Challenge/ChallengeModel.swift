@@ -26,8 +26,9 @@ struct Challenge: Identifiable {
     var distance: String
     var completed: Bool
     var active: Bool
+    var progress: Double
     
-    init(id: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, completed: Bool, active: Bool) {
+    init(id: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, completed: Bool, active: Bool, progress: Double) {
         self.id = id
      //   self.ref = nil
         self.user = user
@@ -36,6 +37,7 @@ struct Challenge: Identifiable {
         self.distance = distance
         self.completed = completed
         self.active = active
+        self.progress = progress
     }
     
     init?(snapshot: [String: Any], id: String){
@@ -49,6 +51,7 @@ struct Challenge: Identifiable {
         var distance = ""
         var completed = false
         var active = true
+        var progress = 0.0
         
         for s in snapshot {
             if s.key == "user" {
@@ -75,6 +78,10 @@ struct Challenge: Identifiable {
                 active = s.value as! Bool
                
             }
+            if s.key == "progress" {
+                progress = s.value as! Double
+               
+            }
         }
 
       //  print("annotations: \(self.annotations)")
@@ -89,6 +96,7 @@ struct Challenge: Identifiable {
         self.distance = distance
         self.completed = completed
         self.active = active
+        self.progress = progress
          //   self.id = snapshot.key
         
     }
@@ -100,7 +108,8 @@ struct Challenge: Identifiable {
             "checkpoints": checkpoints,
             "distance": distance,
             "completed": completed,
-            "active": active
+            "active": active,
+            "progress": progress
         ]
     }
 

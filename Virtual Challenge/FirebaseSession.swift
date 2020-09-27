@@ -46,18 +46,18 @@ class FirebaseSession: ObservableObject {
     }
     
     
-    func uploadChallenge(id: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, completed: Bool, active: Bool) {
+    func uploadChallenge(id: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, completed: Bool, active: Bool, progress: Double) {
    
  
-        let post = Challenge(id: id, user: user, title: title, checkpoints: checkpoints, distance: distance, completed: completed, active: active)
+        let post = Challenge(id: id, user: user, title: title, checkpoints: checkpoints, distance: distance, completed: completed, active: active, progress: progress)
             ref.addDocument(data: post.toAnyObject() as! [String : Any])
  
     }
     
-    func updateChallenge(challenge: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, active: Bool, completed: Bool) {
+    func updateChallenge(challenge: String, user: String, title: String, checkpoints: [GeoPoint], distance: String, active: Bool, completed: Bool, progress: Double) {
      print("updating")
      //   let ref2 = Firestore.firestore().collection(FBKeys.CollectionPath.challenges).document(challenge.id)
-        let post = Challenge(id: challenge, user: user, title: title, checkpoints: checkpoints, distance: distance, completed: completed, active: active).toAnyObject()
+        let post = Challenge(id: challenge, user: user, title: title, checkpoints: checkpoints, distance: distance, completed: completed, active: active, progress: progress).toAnyObject()
    /*     let title = ["title": title] as [String: Any]
         let checkpoints = ["checkpoints": checkpoints] as [String: Any]
         let distance = ["distance": distance] as [String: Any]

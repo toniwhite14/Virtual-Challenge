@@ -25,13 +25,11 @@
 		045B755224B2550600CCC7F3 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B755124B2550600CCC7F3 /* AppDelegate.swift */; };
 		045B755424B2550600CCC7F3 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B755324B2550600CCC7F3 /* SceneDelegate.swift */; };
 		045B755724B2550600CCC7F3 /* Virtual_Challenge.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 045B755524B2550600CCC7F3 /* Virtual_Challenge.xcdatamodeld */; };
-		045B755924B2550600CCC7F3 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B755824B2550600CCC7F3 /* ContentView.swift */; };
 		045B755B24B2550700CCC7F3 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 045B755A24B2550700CCC7F3 /* Assets.xcassets */; };
 		045B755E24B2550700CCC7F3 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 045B755D24B2550700CCC7F3 /* Preview Assets.xcassets */; };
 		045B756124B2550700CCC7F3 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 045B755F24B2550700CCC7F3 /* LaunchScreen.storyboard */; };
 		045B756C24B2550700CCC7F3 /* Virtual_ChallengeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B756B24B2550700CCC7F3 /* Virtual_ChallengeTests.swift */; };
 		045B757724B2550700CCC7F3 /* Virtual_ChallengeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B757624B2550700CCC7F3 /* Virtual_ChallengeUITests.swift */; };
-		045B758524B2555100CCC7F3 /* MapPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B758424B2555100CCC7F3 /* MapPage.swift */; };
 		045B963B24B62F33009BF3C2 /* ListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B963A24B62F33009BF3C2 /* ListView.swift */; };
 		045B963D24B63702009BF3C2 /* LogInView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B963C24B63702009BF3C2 /* LogInView.swift */; };
 		045B964124B638C1009BF3C2 /* SetNewChallenge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 045B964024B638C1009BF3C2 /* SetNewChallenge.swift */; };
@@ -93,7 +91,6 @@
 		045B755124B2550600CCC7F3 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		045B755324B2550600CCC7F3 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		045B755624B2550600CCC7F3 /* Virtual_Challenge.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Virtual_Challenge.xcdatamodel; sourceTree = "<group>"; };
-		045B755824B2550600CCC7F3 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		045B755A24B2550700CCC7F3 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		045B755D24B2550700CCC7F3 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		045B756024B2550700CCC7F3 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -104,11 +101,10 @@
 		045B757224B2550700CCC7F3 /* Virtual ChallengeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Virtual ChallengeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		045B757624B2550700CCC7F3 /* Virtual_ChallengeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Virtual_ChallengeUITests.swift; sourceTree = "<group>"; };
 		045B757824B2550700CCC7F3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		045B758424B2555100CCC7F3 /* MapPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapPage.swift; sourceTree = "<group>"; };
 		045B963A24B62F33009BF3C2 /* ListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListView.swift; sourceTree = "<group>"; };
 		045B963C24B63702009BF3C2 /* LogInView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogInView.swift; sourceTree = "<group>"; };
 		045B964024B638C1009BF3C2 /* SetNewChallenge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetNewChallenge.swift; sourceTree = "<group>"; };
-		045B964224B653FE009BF3C2 /* SubmitProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubmitProgress.swift; sourceTree = "<group>"; };
+		045B964224B653FE009BF3C2 /* SubmitProgress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SubmitProgress.swift; path = "Virtual Challenge/SubmitProgress.swift"; sourceTree = SOURCE_ROOT; };
 		045B964424B65AA9009BF3C2 /* FriendsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsView.swift; sourceTree = "<group>"; };
 		045B964624B65F43009BF3C2 /* FriendsViewRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FriendsViewRow.swift; sourceTree = "<group>"; };
 		045B964824B6637F009BF3C2 /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
@@ -236,12 +232,10 @@
 				045AEC6224C0B10A00A454EA /* Virtual Challenge.entitlements */,
 				045B755124B2550600CCC7F3 /* AppDelegate.swift */,
 				045B755324B2550600CCC7F3 /* SceneDelegate.swift */,
-				045B758424B2555100CCC7F3 /* MapPage.swift */,
 				04B51A3E2505562600F6F386 /* MapTracker.swift */,
 				2695A5B425101C2C002CC306 /* MapView.swift */,
 				2695A5B0250AB6D0002CC306 /* ChallengeModel.swift */,
 				2695A5B2250BF728002CC306 /* FirebaseSession.swift */,
-				045B755824B2550600CCC7F3 /* ContentView.swift */,
 				2695A5B62517EC00002CC306 /* ChallengeView.swift */,
 				045B964024B638C1009BF3C2 /* SetNewChallenge.swift */,
 				045B964224B653FE009BF3C2 /* SubmitProgress.swift */,
@@ -584,8 +578,6 @@
 				045AEC6024C0A96A00A454EA /* SignInWithEmailView.swift in Sources */,
 				045B963B24B62F33009BF3C2 /* ListView.swift in Sources */,
 				04B51A3F2505562600F6F386 /* MapTracker.swift in Sources */,
-				045B755924B2550600CCC7F3 /* ContentView.swift in Sources */,
-				045B758524B2555100CCC7F3 /* MapPage.swift in Sources */,
 				045AEC6924C0B54600A454EA /* FBFireStore.swift in Sources */,
 				045B755724B2550600CCC7F3 /* Virtual_Challenge.xcdatamodeld in Sources */,
 				045AEC6E24C0B55900A454EA /* FBAuthError.swift in Sources */,

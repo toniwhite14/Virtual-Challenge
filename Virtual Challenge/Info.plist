@@ -64,5 +64,7 @@
 	<string>This app requires access to location</string>
 	<key>NSLocationAlwaysUsageDescription</key>
 	<string>This app requires access to location</string>
+	<key>FirebaseScreenReportingEnabled</key>
+	<false/>
 </dict>
 </plist>

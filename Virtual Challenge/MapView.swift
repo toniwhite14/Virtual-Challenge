@@ -82,7 +82,7 @@ struct mapView: UIViewRepresentable {
      //   let map = uiView
         var theDistance : CLLocationDistance = 0
         let distanceFormat = MKDistanceFormatter()
-        distanceFormat.units = .default
+        distanceFormat.units = .metric
         let req = MKDirections.Request()
      //   print(self.annotations)
         if preview {

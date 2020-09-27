@@ -156,13 +156,15 @@ struct ChallengeRow: View {
     @ObservedObject var session = FirebaseSession()
     
     var body: some View {
-        NavigationLink(destination: ChallengeView(challenge: challenge)) {
+        NavigationLink(destination: ChallengeView(challenge: $challenge)) {
       
                 Text(challenge.title)
                 Spacer()
                 Text(challenge.distance)
                 Spacer()
-                Toggle(isOn: $challenge.active){
+                ProgressBar(challenge: $challenge)
+            .frame(width: 50, height: 50)
+     /*           Toggle(isOn: $challenge.active){
                 
                 EmptyView()
                 
@@ -171,10 +173,10 @@ struct ChallengeRow: View {
                 //.onReceive([self.challenge.active].publisher.first()) { (value) in
                     self.challenge.active.toggle()
                         
-                        self.session.updateChallenge(challenge: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, distance: self.challenge.distance, active: self.challenge.active, completed: self.challenge.completed)
+                    self.session.updateChallenge(challenge: self.challenge.id, user: self.challenge.user, title: self.challenge.title, checkpoints: self.challenge.checkpoints, distance: self.challenge.distance, active: self.challenge.active, completed: self.challenge.completed, progress: self.challenge.progress)
             
        //         }
-            }
+            }*/
         }
     }
     
