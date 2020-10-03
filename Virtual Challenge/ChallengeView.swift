@@ -20,7 +20,6 @@ struct ChallengeView: View {
 @State private var preview: Bool = true
 @State var annotations = [MKPointAnnotation]()
 @State var progressValue: Float = 0.0
-@State var milage: CLLocationDistance = 0.0
     
     var body: some View {
     //    NavigationView {
@@ -31,30 +30,47 @@ struct ChallengeView: View {
                 //    .padding()
                     mapView( challenge: $challenge, update: $update, preview: $preview, annotations: $annotations)
                     HStack{
-              
-                        NavigationLink(destination:
-SubmitProgress(challenge: $challenge)){
-                            Text("Add Progress")
-                            Image(systemName: "plus")
-}
-                    }.padding()
-
-                
-            Text("Deadline:")
-            Text("Goal Date").bold()
+                        VStack(alignment: .leading){
+                        Text("Total Distance: \(challenge.distance)")
+                            .font(.footnote)
+                            Text("Progress: \(getMilage())")
+                                .font(.footnote)
+                        }
+                        Spacer()
+                        Text("Goal Date: ").bold()
+                            .font(.caption)
+                    }.padding(.horizontal)
+                    VStack{
+         
+                        NavigationLink(destination: SubmitProgress(challenge: $challenge)){
+                            HStack{
+                                Spacer()
+                                Text("Add Progress")
+                                    .font(.headline)
+                                Image(systemName: "plus")
+                                Spacer()
+                            }.padding()
+                            .background(Color.green)
+                            .cornerRadius(25)
+                        }
+           
+                    }
+                        .padding(.horizontal)
+           
                     
                     HStack{
                         ProgressBar(challenge: $challenge)
                             .frame(width: 80.0, height: 80.0)
                             .padding(40.0)
                         MilageBar(challenge: $challenge)
-                            .frame(width: 80.0, height: 160.0)
+                         //   .frame(width: 80.0, height: 160.0)
                             .padding(40.0)
                         }
                     Spacer()
             
                     
-                }  .navigationBarTitle(Text(challenge.title), displayMode: .inline)
+                }
+                    .navigationBarTitle(Text(challenge.title), displayMode: .inline)
                       .navigationBarItems(leading:
                       Button("") {
                       }
@@ -77,6 +93,15 @@ SubmitProgress(challenge: $challenge)){
     
     func openMenu() {
         self.menuOpen.toggle()
+    }
+    func getMilage() -> String {
+        let formatter = MKDistanceFormatter()
+        formatter.units = .imperial
+        formatter.unitStyle = .full
+     
+        let progress = CLLocationDistance(self.challenge.progress)
+       
+        return formatter.string(fromDistance: progress)
     }
     
 }
@@ -125,26 +150,24 @@ struct ProgressBar: View {
 }
 struct MilageBar: View {
     @Binding var challenge: Challenge
-    @State var milage = ""
     @State var remaining = ""
     let formatter = MKDistanceFormatter()
     var body: some View {
-        ZStack {
+        
             VStack{
-                Text("Logged:")
-                
-                Text(milage)
-                 //   .font(.callout)
-                 //   .bold()
-                    
-                Spacer()
-                Text("Remain:")
 
-                Text(remaining)
+        
+                    Text(remaining)
+                        .bold()
+                        .font(.headline)
+                      
+                    Text("Remaining")
+                    .bold()
+                        .font(.headline)
                 //    .font(.callout)
                 //    .bold()
                 
-            }}.onAppear(){
+            }.onAppear(){
             self.formatter.units = .imperial
             self.formatter.unitStyle = .full
             var distance : CLLocationDistance = 0
@@ -153,7 +176,6 @@ struct MilageBar: View {
                 distance = self.formatter.distance(from: string)
                 }
             let progress = CLLocationDistance(self.challenge.progress)
-            self.milage = self.formatter.string(fromDistance: progress)
             self.remaining = self.formatter.string(fromDistance: progress.distance(to: distance))
         }
         
