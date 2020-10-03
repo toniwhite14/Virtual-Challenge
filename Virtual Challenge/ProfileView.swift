@@ -47,7 +47,7 @@ struct ProfileView: View {
             VStack{
                  HStack{
                     Spacer()
-                    Text("Active Challenges:").bold()
+                    Text("Current Challenges:").bold()
                     Spacer()
                     
                     }.padding()
@@ -81,9 +81,14 @@ struct ProfileView: View {
                               Button("Menu") {
                                   self.openMenu()
                               }
-                            , trailing: Button("Edit"){
+                            , trailing: Button(action: {
                                 
-                          })
+                            },label: {
+                                Image(systemName: "gear")
+                                .imageScale(.large)
+                                .frame(width: 44, height: 44, alignment: .trailing)
+                                
+                            }))
                               Spacer()
             
                           

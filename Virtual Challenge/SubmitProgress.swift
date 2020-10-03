@@ -47,7 +47,7 @@ struct SubmitProgress: View {
     func save() {
         var total: Double = 0.0
         let formatter = MKDistanceFormatter()
-                  formatter.units = .metric
+                  formatter.units = .imperial
         let input = formatter.distance(from: self.input)
         let milage = CLLocationDistance(self.challenge.progress)
         total = Double(Float(milage)+Float(input))

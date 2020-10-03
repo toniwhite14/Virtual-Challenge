@@ -45,13 +45,13 @@ SubmitProgress(challenge: $challenge)){
                     
                     HStack{
                         ProgressBar(challenge: $challenge)
-                    .frame(width: 80.0, height: 80.0)
-                    .padding(40.0)
-                MilageBar(challenge: $challenge)
-                    .frame(width: 80.0, height: 80.0)
-                    .padding(40.0)
-                    }
-                Spacer()
+                            .frame(width: 80.0, height: 80.0)
+                            .padding(40.0)
+                        MilageBar(challenge: $challenge)
+                            .frame(width: 80.0, height: 160.0)
+                            .padding(40.0)
+                        }
+                    Spacer()
             
                     
                 }  .navigationBarTitle(Text(challenge.title), displayMode: .inline)
@@ -110,13 +110,11 @@ struct ProgressBar: View {
         }.onAppear() {
             var distance : CLLocationDistance = 0
             let formatter = MKDistanceFormatter()
-            formatter.units = .metric
+            formatter.units = .imperial
             if self.challenge.distance != "" {
                 let string = self.challenge.distance.components(separatedBy: ",").joined()
-                print(string)
-                
                 distance = formatter.distance(from: string)
-                print(distance)
+              
             }
             let milage = CLLocationDistance(self.challenge.progress)
          //   let remaining = milage.distance(to: distance)
@@ -128,27 +126,35 @@ struct ProgressBar: View {
 struct MilageBar: View {
     @Binding var challenge: Challenge
     @State var milage = ""
+    @State var remaining = ""
     let formatter = MKDistanceFormatter()
     var body: some View {
         ZStack {
-            Circle()
-                .stroke(lineWidth: 5.0)
-            //    .opacity(0.3)
-                .foregroundColor(Color.yellow)
-            
-            /*Circle()
-                .trim(from: 0.0, to: CGFloat(self.milage))
-                .stroke(style: StrokeStyle(lineWidth: 10.0, lineCap: .round, lineJoin: .round))
-                .foregroundColor(Color.yellow)
-                .rotationEffect(Angle(degrees: 270.0))
-                .animation(.linear)*/
-            Text(milage)
-                .font(.callout)
-            .bold()
-        }.onAppear(){
-            self.formatter.units = .metric
-            self.formatter.unitStyle = .abbreviated
-            self.milage = self.formatter.string(fromDistance: CLLocationDistance(self.challenge.progress))
+            VStack{
+                Text("Logged:")
+                
+                Text(milage)
+                 //   .font(.callout)
+                 //   .bold()
+                    
+                Spacer()
+                Text("Remain:")
+
+                Text(remaining)
+                //    .font(.callout)
+                //    .bold()
+                
+            }}.onAppear(){
+            self.formatter.units = .imperial
+            self.formatter.unitStyle = .full
+            var distance : CLLocationDistance = 0
+            if self.challenge.distance != "" {
+                let string = self.challenge.distance.components(separatedBy: ",").joined()
+                distance = self.formatter.distance(from: string)
+                }
+            let progress = CLLocationDistance(self.challenge.progress)
+            self.milage = self.formatter.string(fromDistance: progress)
+            self.remaining = self.formatter.string(fromDistance: progress.distance(to: distance))
         }
         
     }
