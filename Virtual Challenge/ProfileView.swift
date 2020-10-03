@@ -10,6 +10,7 @@ import SwiftUI
 import FirebaseAuth
 import SDWebImageSwiftUI
 import FirebaseStorage
+import MapKit
 
 struct ProfileView: View {
     @EnvironmentObject var userInfo: UserInfo
@@ -17,6 +18,7 @@ struct ProfileView: View {
     @State var profileImage: WebImage = WebImage(url: URL(string: ""))
     @State var menuOpen: Bool = false
     @State var showScreen: Bool = false
+//    @State var totalDistance = ""
     
     var body: some View {
         NavigationView {
@@ -31,7 +33,8 @@ struct ProfileView: View {
                 .fontWeight(.heavy)
             
             //Add list
-            Text("Total Mileage completed:")
+            Text("Total distance completed:")
+            Text(getDistance())
             //Add Total of all challenges combined
             //?add badges for 1/3/5/10/15/20 challenges
         /*    Button (action: {
@@ -98,7 +101,7 @@ struct ProfileView: View {
             }.onAppear(){
                 self.image()
                 self.session.getChallenges(user: self.userInfo.user.uid)
-            //    self.getActiveChallanges()
+            
             }}
         }
 
@@ -107,6 +110,17 @@ struct ProfileView: View {
         self.menuOpen.toggle()
     }
     
+    func getDistance() -> String {
+        let formatter = MKDistanceFormatter()
+        formatter.units = .imperial
+        formatter.unitStyle = .full
+        var progress = 0.0
+        for challenge in session.challenges {
+            progress += challenge.progress
+        }
+        
+        return formatter.string(fromDistance: progress)
+    }
     func image() {
          guard let uid = Auth.auth().currentUser?.uid else {
              return
