@@ -160,10 +160,11 @@ struct MilageBar: View {
                     Text(remaining)
                         .bold()
                         .font(.headline)
-                      
+                        .foregroundColor(Color.red)
                     Text("Remaining")
                     .bold()
-                        .font(.headline)
+                    .font(.headline)
+                    .foregroundColor(Color.red)
                 //    .font(.callout)
                 //    .bold()
                 
