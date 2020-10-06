@@ -199,12 +199,9 @@ struct mapView: UIViewRepresentable {
             let milage = CLLocationDistance(self.challenge.progress)
             let progress = Float(milage)/(Float(distance))
             let progressPoint = Float(pointCount)*progress
-        print(progressPoint)
-                return CLLocationCoordinate2D(latitude: (points[Int(progressPoint)].coordinate.latitude), longitude: (points[Int(progressPoint)].coordinate.longitude))
-        //    let point = LocationAnnotation(coordinate: CLLocationCoordinate2D(latitude: (points[Int(progressPoint)].coordinate.latitude), longitude: (points[Int(progressPoint)].coordinate.longitude)))
-      //          uiView.addAnnotation(point)
-                
-            
+     
+            return CLLocationCoordinate2D(latitude: (points[Int(progressPoint)].coordinate.latitude), longitude: (points[Int(progressPoint)].coordinate.longitude))
+   
             
     }
     func updateUIView(_ uiView: MKMapView, context: Context) {
@@ -227,6 +224,7 @@ struct mapView: UIViewRepresentable {
                     self.getDirctions(uiView)
         }
     }
+            else {
             if self.preview == false {
                 if self.annotations.count != uiView.annotations.count {
              
@@ -239,6 +237,7 @@ struct mapView: UIViewRepresentable {
                 }
             }
             
+        }
         }
      
     }
