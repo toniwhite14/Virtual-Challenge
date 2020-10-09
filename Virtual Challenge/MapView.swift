@@ -118,12 +118,12 @@ struct mapView: UIViewRepresentable {
                                         print(points.count)
                                  //       self.challenge.distance = distanceFormat.string(fromDistance: theDistance)
                                         uiView.addOverlay(polyline!)
-                                        if self.setup {
+                                    //    if self.setup {
                                             if theDistance > self.challenge.progress {
                                                 let point = LocationAnnotation(coordinate: self.addProgressPoint(theDistance: theDistance, pointCount: pointCount, points: points))
                                                 uiView.addAnnotation(point)
-                                                self.setup = false
-                                            }
+                                            //    self.setup = false
+                                  //          }
                                     
                                     }
                                 }

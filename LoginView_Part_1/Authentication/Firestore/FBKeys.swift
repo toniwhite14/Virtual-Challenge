@@ -21,9 +21,5 @@ enum FBKeys {
         
         // Add app specific keys here
     }
-    enum Challenge {
-        static let user = "user"
-        static let title = "title"
-        static let checkpoints = "checkpoints"
-    }
+
 }
