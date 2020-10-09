@@ -82,6 +82,7 @@ struct mapView: UIViewRepresentable {
         let req = MKDirections.Request()
      //   print(self.annotations)
         if preview {
+            var onerun = true
             if self.challenge.checkpoints != [] {
              //   uiView.removeOverlays(uiView.overlays)
             
@@ -118,12 +119,12 @@ struct mapView: UIViewRepresentable {
                                         print(points.count)
                                  //       self.challenge.distance = distanceFormat.string(fromDistance: theDistance)
                                         uiView.addOverlay(polyline!)
-                                    //    if self.setup {
+                                        if onerun {
                                             if theDistance > self.challenge.progress {
                                                 let point = LocationAnnotation(coordinate: self.addProgressPoint(theDistance: theDistance, pointCount: pointCount, points: points))
                                                 uiView.addAnnotation(point)
-                                            //    self.setup = false
-                                  //          }
+                                                onerun = false
+                                            }
                                     
                                     }
                                 }
@@ -223,8 +224,8 @@ struct mapView: UIViewRepresentable {
                 uiView.removeOverlays(uiView.overlays)
                     self.getDirctions(uiView)
         }
-    }
-            else {
+            }}
+         //   else {
             if self.preview == false {
                 if self.annotations.count != uiView.annotations.count {
              
@@ -237,8 +238,8 @@ struct mapView: UIViewRepresentable {
                 }
             }
             
-        }
-        }
+     //   }
+    //    }
      
     }
 
@@ -263,6 +264,7 @@ struct mapView: UIViewRepresentable {
                 
                         else {
                             parent.annotations.append(annotation)
+                            
                         }
                 }
             }
