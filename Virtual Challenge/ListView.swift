@@ -125,7 +125,7 @@ func goCurrentChallengesList() {
 //TO MOVE TO FRIENDSVIEW
 func goFriendsView() {
     if let window = UIApplication.shared.windows.first {
-        window.rootViewController = UIHostingController(rootView: FriendsView())
+        window.rootViewController = UIHostingController(rootView: FriendsView().environmentObject(userInfo))
     }
 }
 

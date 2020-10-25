@@ -27,18 +27,9 @@
 @class FSTFirestoreClient;
 @class FSTUserDataConverter;
 
-namespace firebase {
-namespace firestore {
-namespace remote {
-class FirebaseMetadataProvider;
-}  // namespace remote
-}  // namespace firestore
-}  // namespace firebase
-
 namespace api = firebase::firestore::api;
 namespace auth = firebase::firestore::auth;
 namespace model = firebase::firestore::model;
-namespace remote = firebase::firestore::remote;
 namespace util = firebase::firestore::util;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -61,8 +52,6 @@ NS_ASSUME_NONNULL_BEGIN
                     persistenceKey:(std::string)persistenceKey
                credentialsProvider:(std::shared_ptr<auth::CredentialsProvider>)credentialsProvider
                        workerQueue:(std::shared_ptr<util::AsyncQueue>)workerQueue
-          firebaseMetadataProvider:
-              (std::unique_ptr<remote::FirebaseMetadataProvider>)firebaseMetadataProvider
                        firebaseApp:(FIRApp *)app
                   instanceRegistry:(nullable id<FSTFirestoreInstanceRegistry>)registry;
 @end

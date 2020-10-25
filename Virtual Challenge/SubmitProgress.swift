@@ -15,6 +15,7 @@ struct SubmitProgress: View {
     @State var input: String = ""
     @ObservedObject var session = FirebaseSession()
     @Binding var challenge: Challenge
+    @State private var showingAlert = false
     //var constant = "text"
     
     var body: some View {
@@ -42,8 +43,22 @@ struct SubmitProgress: View {
                 Text("Submit")
             }
 
+        }.alert(isPresented: $showingAlert) { () -> Alert in
+            let primaryButton = Alert.Button.default(Text("Share").bold()) {
+                actionSheet()
+            }
+            let secondaryButton = Alert.Button.default(Text("Dismiss")) {
+            
+            }
+            return Alert(title: Text("Congratulations"), message: Text("You have now completed this challenge!"), primaryButton: primaryButton, secondaryButton: secondaryButton)
         }
+        
     }
+    func actionSheet() {
+        let data = [challenge.title, challenge.distance]
+            let av = UIActivityViewController(activityItems: data, applicationActivities: nil)
+            UIApplication.shared.windows.first?.rootViewController?.present(av, animated: true, completion: nil)
+        }
     func save() {
         var total: Double = 0.0
         let formatter = MKDistanceFormatter()
@@ -59,7 +74,7 @@ struct SubmitProgress: View {
           
         }
         if Float(CLLocationDistance(total)) >= Float(distance) {
-            print(true)
+            self.showingAlert = true
             challenge.completed = true
         }
         session.updateChallenge(challenge: challenge.id, user: challenge.user, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, active: challenge.active, completed: challenge.completed, progress: total)

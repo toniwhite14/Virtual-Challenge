@@ -1,6 +1,3 @@
-# v6.9.1
-- [fixed] Internal source documentation. (#6371)
-
 # v6.9.0
 - [added] Added support for multi-tenancy (#6142).
 - [added] Added basic watchOS support. (#4621)

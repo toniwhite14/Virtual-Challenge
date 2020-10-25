@@ -24,8 +24,6 @@
 #include "Firestore/core/src/core/in_filter.h"
 #include "Firestore/core/src/core/key_field_filter.h"
 #include "Firestore/core/src/core/key_field_in_filter.h"
-#include "Firestore/core/src/core/key_field_not_in_filter.h"
-#include "Firestore/core/src/core/not_in_filter.h"
 #include "Firestore/core/src/core/operator.h"
 #include "Firestore/core/src/model/document.h"
 #include "Firestore/core/src/util/exception.h"
@@ -53,8 +51,6 @@ const char* CanonicalName(Filter::Operator op) {
       return "<=";
     case Filter::Operator::Equal:
       return "==";
-    case Filter::Operator::NotEqual:
-      return "!=";
     case Filter::Operator::GreaterThanOrEqual:
       return ">=";
     case Filter::Operator::GreaterThan:
@@ -69,8 +65,6 @@ const char* CanonicalName(Filter::Operator op) {
       return "in";
     case Filter::Operator::ArrayContainsAny:
       return "array-contains-any";
-    case Filter::Operator::NotIn:
-      return "not-in";
   }
 
   UNREACHABLE();
@@ -83,9 +77,9 @@ FieldFilter FieldFilter::Create(FieldPath path,
                                 FieldValue value_rhs) {
   if (path.IsKeyFieldPath()) {
     if (op == Filter::Operator::In) {
+      HARD_ASSERT(value_rhs.type() == FieldValue::Type::Array,
+                  "Comparing on key with IN, but the value was not an Array");
       return KeyFieldInFilter(std::move(path), std::move(value_rhs));
-    } else if (op == Filter::Operator::NotIn) {
-      return KeyFieldNotInFilter(std::move(path), std::move(value_rhs));
     } else {
       HARD_ASSERT(value_rhs.type() == FieldValue::Type::Reference,
                   "Comparing on key, but filter value not a Reference.");
@@ -96,19 +90,17 @@ FieldFilter FieldFilter::Create(FieldPath path,
     }
 
   } else if (value_rhs.type() == FieldValue::Type::Null) {
-    if (op != Filter::Operator::Equal && op != Filter::Operator::NotEqual) {
+    if (op != Filter::Operator::Equal) {
       ThrowInvalidArgument(
-          "Invalid Query. Null supports only 'equalTo' and 'notEqualTo' "
-          "comparisons.");
+          "Invalid Query. Null supports only equality comparisons.");
     }
     Rep filter(std::move(path), op, std::move(value_rhs));
     return FieldFilter(std::make_shared<const Rep>(std::move(filter)));
 
   } else if (value_rhs.is_nan()) {
-    if (op != Filter::Operator::Equal && op != Filter::Operator::NotEqual) {
+    if (op != Filter::Operator::Equal) {
       ThrowInvalidArgument(
-          "Invalid Query. NaN supports only 'equalTo' and 'notEqualTo' "
-          "comparisons.");
+          "Invalid Query. NaN supports only equality comparisons.");
     }
     Rep filter(std::move(path), op, std::move(value_rhs));
     return FieldFilter(std::make_shared<const Rep>(std::move(filter)));
@@ -120,15 +112,12 @@ FieldFilter FieldFilter::Create(FieldPath path,
     HARD_ASSERT(value_rhs.type() == FieldValue::Type::Array,
                 "IN filter has invalid value: %s", value_rhs.type());
     return InFilter(std::move(path), std::move(value_rhs));
+
   } else if (op == Operator::ArrayContainsAny) {
     HARD_ASSERT(value_rhs.type() == FieldValue::Type::Array,
                 "arrayContainsAny filter has invalid value: %s",
                 value_rhs.type());
     return ArrayContainsAnyFilter(std::move(path), std::move(value_rhs));
-  } else if (op == Operator::NotIn) {
-    HARD_ASSERT(value_rhs.type() == FieldValue::Type::Array,
-                "notIn filter has invalid value: %s", value_rhs.type());
-    return NotInFilter(std::move(path), std::move(value_rhs));
   } else {
     Rep filter(std::move(path), op, std::move(value_rhs));
     return FieldFilter(std::make_shared<const Rep>(std::move(filter)));
@@ -149,8 +138,7 @@ FieldFilter::Rep::Rep(FieldPath field, Operator op, FieldValue value_rhs)
 
 bool FieldFilter::Rep::IsInequality() const {
   return op_ == Operator::LessThan || op_ == Operator::LessThanOrEqual ||
-         op_ == Operator::GreaterThan || op_ == Operator::GreaterThanOrEqual ||
-         op_ == Operator::NotEqual || op_ == Operator::NotIn;
+         op_ == Operator::GreaterThan || op_ == Operator::GreaterThanOrEqual;
 }
 
 bool FieldFilter::Rep::Matches(const model::Document& doc) const {
@@ -158,11 +146,6 @@ bool FieldFilter::Rep::Matches(const model::Document& doc) const {
   if (!maybe_lhs) return false;
 
   const FieldValue& lhs = *maybe_lhs;
-
-  // Types do not have to match in NotEqual filters.
-  if (op_ == Operator::NotEqual) {
-    return MatchesComparison(lhs.CompareTo(value_rhs_));
-  }
 
   // Only compare types with matching backend order (such as double and int).
   return FieldValue::Comparable(lhs.type(), value_rhs_.type()) &&
@@ -183,8 +166,6 @@ bool FieldFilter::Rep::MatchesComparison(ComparisonResult comparison) const {
              comparison == ComparisonResult::Same;
     case Operator::GreaterThan:
       return comparison == ComparisonResult::Descending;
-    case Operator::NotEqual:
-      return comparison != ComparisonResult::Same;
     default:
       HARD_FAIL("Operator %s unsuitable for comparison", op_);
   }

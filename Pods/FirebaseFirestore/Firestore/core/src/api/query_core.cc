@@ -62,41 +62,6 @@ using util::ThrowInvalidArgument;
 
 using Operator = Filter::Operator;
 
-namespace {
-/**
- * Given an operator, returns the set of operators that cannot be used with
- * it.
- *
- * Operators in a query must adhere to the following set of rules:
- * 1. Only one array operator is allowed.
- * 2. Only one disjunctive operator is allowed.
- * 3. NOT_EQUAL cannot be used with another NOT_EQUAL operator.
- * 4. NOT_IN cannot be used with array, disjunctive, or NOT_EQUAL operators.
- *
- * Array operators: ARRAY_CONTAINS, ARRAY_CONTAINS_ANY
- * Disjunctive operators: IN, ARRAY_CONTAINS_ANY, NOT_IN
- */
-static std::vector<Operator> ConflictingOps(Operator op) {
-  switch (op) {
-    case Operator::NotEqual:
-      return {Operator::NotEqual, Operator::NotIn};
-    case Operator::ArrayContains:
-      return {Operator::ArrayContains, Operator::ArrayContainsAny,
-              Operator::NotIn};
-    case Operator::In:
-      return {Operator::ArrayContainsAny, Operator::In, Operator::NotIn};
-    case Operator::ArrayContainsAny:
-      return {Operator::ArrayContains, Operator::ArrayContainsAny, Operator::In,
-              Operator::NotIn};
-    case Operator::NotIn:
-      return {Operator::ArrayContains, Operator::ArrayContainsAny, Operator::In,
-              Operator::NotIn, Operator::NotEqual};
-    default:
-      return std::vector<Operator>();
-  }
-}
-}  // unnamed namespace
-
 Query::Query(core::Query query, std::shared_ptr<Firestore> firestore)
     : firestore_{std::move(firestore)}, query_{std::move(query)} {
 }
@@ -223,7 +188,7 @@ std::unique_ptr<ListenerRegistration> Query::AddSnapshotListener(
 }
 
 Query Query::Filter(FieldPath field_path,
-                    Operator op,
+                    Filter::Operator op,
                     FieldValue field_value,
                     const std::function<std::string()>& type_describer) const {
   if (field_path.IsKeyFieldPath()) {
@@ -232,7 +197,7 @@ Query Query::Filter(FieldPath field_path,
           "Invalid query. You can't perform %s queries on document "
           "ID since document IDs are not arrays.",
           Describe(op));
-    } else if (op == Operator::In || op == Operator::NotIn) {
+    } else if (op == Filter::Operator::In) {
       ValidateDisjunctiveFilterElements(field_value, op);
       std::vector<FieldValue> references;
       for (const auto& array_value : field_value.array_value()) {
@@ -311,10 +276,9 @@ void Query::ValidateNewFilter(const class Filter& filter) const {
 
       if (existing_inequality && *existing_inequality != *new_inequality) {
         ThrowInvalidArgument(
-            "Invalid Query. All where filters with an inequality (notEqual, "
-            "lessThan, lessThanOrEqual, greaterThan, or greaterThanOrEqual) "
-            "must be on the same field. But you have inequality filters on "
-            "'%s' and '%s'",
+            "Invalid Query. All where filters with an inequality (lessThan, "
+            "lessThanOrEqual, greaterThan, or greaterThanOrEqual) must be on "
+            "the same field. But you have inequality filters on '%s' and '%s'",
             existing_inequality->CanonicalString(),
             new_inequality->CanonicalString());
       }
@@ -323,23 +287,32 @@ void Query::ValidateNewFilter(const class Filter& filter) const {
       if (first_order_by_field) {
         ValidateOrderByField(*first_order_by_field, filter.field());
       }
-    }
-    Operator filter_op = field_filter.op();
-    absl::optional<Operator> conflicting_op =
-        query_.FindOperator(ConflictingOps(filter_op));
 
-    if (conflicting_op) {
-      // We special case when it's a duplicate op to give a slightly clearer
-      // error message.
-      if (*conflicting_op == filter_op) {
-        ThrowInvalidArgument(
-            "Invalid Query. You cannot use more than one '%s' filter.",
-            Describe(filter_op));
-      } else {
-        ThrowInvalidArgument(
-            "Invalid Query. You cannot use '%s' filters with"
-            " '%s' filters.",
-            Describe(filter_op), Describe(conflicting_op.value()));
+    } else {
+      // You can have at most 1 disjunctive filter and 1 array filter. Check if
+      // the new filter conflicts with an existing one.
+      absl::optional<Operator> conflicting_op;
+      Operator filter_op = field_filter.op();
+
+      if (IsDisjunctiveOperator(filter_op)) {
+        conflicting_op = query_.FirstDisjunctiveOperator();
+      }
+      if (!conflicting_op.has_value() && IsArrayOperator(filter_op)) {
+        conflicting_op = query_.FirstArrayOperator();
+      }
+      if (conflicting_op) {
+        // We special case when it's a duplicate op to give a slightly clearer
+        // error message.
+        if (*conflicting_op == filter_op) {
+          ThrowInvalidArgument(
+              "Invalid Query. You cannot use more than one '%s' filter.",
+              Describe(filter_op));
+        } else {
+          ThrowInvalidArgument(
+              "Invalid Query. You cannot use '%s' filters with"
+              " '%s' filters.",
+              Describe(filter_op), Describe(conflicting_op.value()));
+        }
       }
     }
   }
@@ -360,10 +333,10 @@ void Query::ValidateOrderByField(const FieldPath& order_by_field,
   if (order_by_field != inequality_field) {
     ThrowInvalidArgument(
         "Invalid query. You have a where filter with an inequality "
-        "(notEqual, lessThan, lessThanOrEqual, greaterThan, or "
-        "greaterThanOrEqual) on field '%s' and so you must also use '%s' as "
-        "your first queryOrderedBy field, but your first queryOrderedBy is "
-        "currently on field '%s' instead.",
+        "(lessThan, lessThanOrEqual, greaterThan, or greaterThanOrEqual) on "
+        "field '%s' and so you must also use '%s' as your first queryOrderedBy "
+        "field, but your first queryOrderedBy is currently on field '%s' "
+        "instead.",
         inequality_field.CanonicalString(), inequality_field.CanonicalString(),
         order_by_field.CanonicalString());
   }
@@ -378,7 +351,7 @@ void Query::ValidateHasExplicitOrderByForLimitToLast() const {
 }
 
 void Query::ValidateDisjunctiveFilterElements(
-    const model::FieldValue& field_value, Operator op) const {
+    const model::FieldValue& field_value, core::Filter::Operator op) const {
   HARD_ASSERT(
       field_value.type() == FieldValue::Type::Array,
       "A FieldValue of Array type is required for disjunctive filters.");
@@ -397,19 +370,17 @@ void Query::ValidateDisjunctiveFilterElements(
 
   std::vector<FieldValue> array = field_value.array_value();
   for (const auto& val : array) {
-    if (op == Operator::In || op == Operator::ArrayContainsAny) {
-      if (val.is_null()) {
-        ThrowInvalidArgument(
-            "Invalid Query. '%s' filters cannot contain 'null' in"
-            " the value array.",
-            Describe(op));
-      }
-      if (val.is_nan()) {
-        ThrowInvalidArgument(
-            "Invalid Query. '%s' filters cannot contain 'NaN' in"
-            " the value array.",
-            Describe(op));
-      }
+    if (val.is_null()) {
+      ThrowInvalidArgument(
+          "Invalid Query. '%s' filters cannot contain 'null' in"
+          " the value array.",
+          Describe(op));
+    }
+    if (val.is_nan()) {
+      ThrowInvalidArgument(
+          "Invalid Query. '%s' filters cannot contain 'NaN' in"
+          " the value array.",
+          Describe(op));
     }
   }
 }
@@ -452,28 +423,24 @@ FieldValue Query::ParseExpectedReferenceValue(
   }
 }
 
-std::string Query::Describe(Operator op) const {
+std::string Query::Describe(Filter::Operator op) const {
   switch (op) {
-    case Operator::LessThan:
+    case Filter::Operator::LessThan:
       return "lessThan";
-    case Operator::LessThanOrEqual:
+    case Filter::Operator::LessThanOrEqual:
       return "lessThanOrEqual";
-    case Operator::Equal:
+    case Filter::Operator::Equal:
       return "equal";
-    case Operator::NotEqual:
-      return "notEqual";
-    case Operator::GreaterThanOrEqual:
+    case Filter::Operator::GreaterThanOrEqual:
       return "greaterThanOrEqual";
-    case Operator::GreaterThan:
+    case Filter::Operator::GreaterThan:
       return "greaterThan";
-    case Operator::ArrayContains:
+    case Filter::Operator::ArrayContains:
       return "arrayContains";
-    case Operator::In:
+    case Filter::Operator::In:
       return "in";
-    case Operator::ArrayContainsAny:
+    case Filter::Operator::ArrayContainsAny:
       return "arrayContainsAny";
-    case Operator::NotIn:
-      return "notIn";
   }
 
   UNREACHABLE();
