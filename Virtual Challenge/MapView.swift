@@ -198,10 +198,16 @@ struct mapView: UIViewRepresentable {
                 distance = formatter.distance(from: string)
                  }
             let milage = CLLocationDistance(self.challenge.progress)
+        if Float(milage) < Float(distance) {
             let progress = Float(milage)/(Float(distance))
             let progressPoint = Float(pointCount)*progress
-     
             return CLLocationCoordinate2D(latitude: (points[Int(progressPoint)].coordinate.latitude), longitude: (points[Int(progressPoint)].coordinate.longitude))
+        }
+        else {
+            return CLLocationCoordinate2D(latitude: challenge.checkpoints[challenge.checkpoints.count-1].latitude, longitude:  challenge.checkpoints[challenge.checkpoints.count-1].longitude)
+        }
+        
+            
    
             
     }
@@ -287,24 +293,27 @@ struct mapView: UIViewRepresentable {
             pin.animatesDrop = false
             if let uid = Auth.auth().currentUser?.uid {
                 let image = "\(uid)"
+                var picture = UIImage()
                 let storage = Storage.storage().reference(withPath: image)
                 storage.downloadURL{(url, err) in
                     if err != nil {
                         print(err?.localizedDescription as Any)
-                        pic.image = UIImage(named: "NoUserImage")!
+                        picture = UIImage(named: "NoUserImage")!
                         let size = CGSize(width: 40, height: 40)
-                        pic.image = UIGraphicsImageRenderer(size:size).image {
-                             _ in pic.image!.draw(in:CGRect(origin:.zero, size:size))
+                        picture = UIGraphicsImageRenderer(size:size).image {
+                             _ in picture.draw(in:CGRect(origin:.zero, size:size))
                         }
+                        pic.image = picture
                     }
                     else {
                     let theurl = url
                     if let data = try? Data(contentsOf: theurl!) {
-                        pic.image = UIImage(data: data)!
+                        picture = UIImage(data: data)!
                         let size = CGSize(width: 40, height: 40)
-                        pic.image = UIGraphicsImageRenderer(size:size).image {
-                             _ in pic.image!.draw(in:CGRect(origin:.zero, size:size))
+                        picture = UIGraphicsImageRenderer(size:size).image {
+                             _ in picture.draw(in:CGRect(origin:.zero, size:size))
                         }
+                        pic.image = picture
                         }
                     }
                 }
@@ -317,6 +326,7 @@ struct mapView: UIViewRepresentable {
                 return pic
             }
         }
+
         func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
             
          //   mapView.removeOverlays(mapView.overlays)

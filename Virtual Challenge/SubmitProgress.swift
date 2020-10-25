@@ -52,6 +52,16 @@ struct SubmitProgress: View {
         let milage = CLLocationDistance(self.challenge.progress)
         total = Double(Float(milage)+Float(input))
         self.challenge.progress = total
+        var distance: CLLocationDistance = 0
+        if self.challenge.distance != "" {
+            let string = self.challenge.distance.components(separatedBy: ",").joined()
+            distance = formatter.distance(from: string)
+          
+        }
+        if Float(CLLocationDistance(total)) >= Float(distance) {
+            print(true)
+            challenge.completed = true
+        }
         session.updateChallenge(challenge: challenge.id, user: challenge.user, title: challenge.title, checkpoints: challenge.checkpoints, distance: challenge.distance, active: challenge.active, completed: challenge.completed, progress: total)
         print(total)
 self.presentationMode.wrappedValue.dismiss()

@@ -41,13 +41,25 @@ struct ChallengeView: View {
                             .font(.caption)
                     }.padding(.horizontal)
                     VStack{
-         
-                        NavigationLink(destination: SubmitProgress(challenge: $challenge)){
+                        if challenge.completed == false {
+                            NavigationLink(destination: SubmitProgress(challenge: $challenge)){
+                                HStack{
+                                    Spacer()
+                                    Text("Add Progress")
+                                        .font(.headline)
+                                    Image(systemName: "plus")
+                                    Spacer()
+                                }.padding()
+                                .background(Color.green)
+                                .cornerRadius(25)
+                            }
+                        }
+                        else {
                             HStack{
                                 Spacer()
-                                Text("Add Progress")
+                                Text("Challenge Completed")
                                     .font(.headline)
-                                Image(systemName: "plus")
+                                Image(systemName: "tick")
                                 Spacer()
                             }.padding()
                             .background(Color.green)
@@ -176,8 +188,14 @@ struct MilageBar: View {
                 let string = self.challenge.distance.components(separatedBy: ",").joined()
                 distance = self.formatter.distance(from: string)
                 }
-            let progress = CLLocationDistance(self.challenge.progress)
-            self.remaining = self.formatter.string(fromDistance: progress.distance(to: distance))
+              
+                if challenge.completed {
+                    self.remaining = self.formatter.string(fromDistance: CLLocationDistance(0))
+                }
+                else {
+                    let progress = CLLocationDistance(self.challenge.progress)
+                    self.remaining = self.formatter.string(fromDistance: progress.distance(to: distance))
+                }
         }
         
     }

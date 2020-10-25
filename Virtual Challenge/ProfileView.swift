@@ -152,7 +152,7 @@ struct ProfileView: View {
     func getActiveChallanges() -> [Challenge]{
         var array : [Challenge] = []
         for challenge in session.challenges {
-            if challenge.active {
+            if challenge.completed == false {
                 array.append(challenge)
             }
         }
