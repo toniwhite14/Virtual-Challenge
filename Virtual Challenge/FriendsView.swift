@@ -9,9 +9,12 @@
 import SwiftUI
 
 struct FriendsView: View {
+    @State var menuOpen: Bool = false
+    
     var body: some View {
-        VStack {
-            
+        NavigationView {
+      //  VStack {
+            ZStack {
             VStack {
                 Text("Friends Image")
                     .frame(width:300, height:300)
@@ -30,8 +33,23 @@ struct FriendsView: View {
                 
             
             }
-        }
         
+       
+            .navigationBarItems(leading: Button("Menu") {
+                                          self.openMenu()}
+                )
+                                      Spacer()
+                    
+                    SideMenu(width: 270,
+                             isOpen: self.menuOpen,
+                             menuClose: self.openMenu)
+        }
+        }
+    }
+    
+
+    func openMenu() {
+        self.menuOpen.toggle()
     }
 }
 
